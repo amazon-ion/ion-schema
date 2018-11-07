@@ -273,15 +273,17 @@ If the minimum or maximum end of a range is to be unspecified, this shall
 be represented by the symbols `min` or `max`, respectively; the `exclusive`
 annotation is not applicable when the symbols `min` or `max` are specified.
 
-```
-range::[5, max]                        // minimum 5, maximum unbound
-range::[min, 7]                        // minimum unbound, maximum 7
-range::[5, 7]                          // between 5 and 7, inclusive
-range::[exclusive::5, exclusive::7]    // only 6 is valid
-range::[5.5, 7.9]                      // between 5.5 and 7.9, inclusive
-```
+> ```
+> range::[5, max]                        // minimum 5, maximum unbound
+> range::[min, 7]                        // minimum unbound, maximum 7
+> range::[5, 7]                          // between 5 and 7, inclusive
+> range::[exclusive::5, exclusive::7]    // only 6 is valid
+> range::[5.5, 7.9]                      // between 5.5 and 7.9, inclusive
+> ```
 
 ## General Constraints
+
+### annotations
 
 <code><b>annotations:</b> [ <i>&lt;ANNOTATION&gt;...</i> ]</code><br/>
 <code><b>annotations:</b> required::[ <i>&lt;ANNOTATION&gt;...</i> ]</code><br/>
@@ -300,11 +302,11 @@ Note that annotations represent metadata for a value, and
 additional annotations on a value are valid independent of
 whether a type is constrained by `content: closed`.
 
-```
-annotations: [red, required::green, blue]
-annotations: required::[red, optional::green, blue]
-annotations: required::ordered::[one, optional::two, three]
-```
+> ```
+> annotations: [red, required::green, blue]
+> annotations: required::[red, optional::green, blue]
+> annotations: required::ordered::[one, optional::two, three]
+> ```
 
 ### type
 
@@ -319,10 +321,10 @@ type must agree with the expected type (e.g., if a `nullable::int` is
 expected, `5`, `null`, `null.null`, and `null.int` are valid, but
 `null.string` is not).
 
-```
-{ type: int }
-{ type: nullable::int }
-```
+> ```
+> { type: int }
+> { type: nullable::int }
+> ```
 
 ### valid_values
 
@@ -338,20 +340,20 @@ and timestamp types, valid_values may optionally be defined as a
 range. When a timestamp range is specified, neither end of the range
 may have an unknown local offset.
 
-```
-valid_values: [2, 3, 5, 7, 11, 13, 17, 19]
-valid_values: ["abc", "def", "ghi"]
-valid_values: [[1], [2.0, 3.0], [three, four, five]]
-valid_values: [2000T, 2004T, 2008T, 2012T]
-valid_values: range::[-100, max]
-valid_values: range::[min, 100]
-valid_values: range::[-100, 100]
-valid_values: range::[0, 100.0]
-valid_values: range::[exclusive::0d0, exclusive::1]
-valid_values: range::[-0.12e4, 0.123]
-valid_values: range::[2000-01-01T00:00:00Z, max]
-valid_values: [1, 2, 3, null, null.int]
-```
+> ```
+> valid_values: [2, 3, 5, 7, 11, 13, 17, 19]
+> valid_values: ["abc", "def", "ghi"]
+> valid_values: [[1], [2.0, 3.0], [three, four, five]]
+> valid_values: [2000T, 2004T, 2008T, 2012T]
+> valid_values: range::[-100, max]
+> valid_values: range::[min, 100]
+> valid_values: range::[-100, 100]
+> valid_values: range::[0, 100.0]
+> valid_values: range::[exclusive::0d0, exclusive::1]
+> valid_values: range::[-0.12e4, 0.123]
+> valid_values: range::[2000-01-01T00:00:00Z, max]
+> valid_values: [1, 2, 3, null, null.int]
+> ```
 
 ## Blob/Clob Constraints
 
@@ -365,12 +367,12 @@ that this constrains the number of bytes in the input source, which
 may differ from the number of bytes needed to serialize the
 blob/clob).
 
-```
-byte_length: 5
-byte_length: range::[10, max]
-byte_length: range::[min, 100]
-byte_length: range::[10, 100]
-```
+> ```
+> byte_length: 5
+> byte_length: range::[10, max]
+> byte_length: range::[min, 100]
+> byte_length: range::[10, 100]
+> ```
 
 ## String/Symbol Constraints
 
@@ -384,12 +386,12 @@ in a string or symbol.  Note that characters are a complex
 topic in Unicode, whereas codepoints provide an unambiguous
 unit for constraining the length of a string or symbol.
 
-```
-codepoint_length: 5
-codepoint_length: range::[10, max]
-codepoint_length: range::[min, 100]
-codepoint_length: range::[10, 100]
-```
+> ```
+> codepoint_length: 5
+> codepoint_length: range::[10, max]
+> codepoint_length: range::[min, 100]
+> codepoint_length: range::[10, 100]
+> ```
 
 ### regex
 
