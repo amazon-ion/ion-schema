@@ -1,0 +1,9 @@
+main:
+  - title: "Home"
+    url: /
+  - title: "News"
+    url: /news.html
+  - title: "Docs"
+    url: /docs
+  - title: "Libs"
+    url: /libs.html
