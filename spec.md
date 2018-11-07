@@ -61,12 +61,12 @@ assumes that readers are familiar with the Ion data model defined in the
   * [union](#union)
   * [byte_length constraint](#byte_length-constraint)
   * [document](#document)
-  * [list<string>](#liststring)
-  * [list<bool, string, int+\>](#listbool-string-int)
-  * [map<string,int> represented as
-struct<int>](#mapstringint-represented-as-structint)
-  * [map<string,int> represented as
-list<pair<string,int>>](#mapstringint-represented-as-listpairstringint)
+  * [list&lt;string&gt;](#liststring)
+  * [list&lt;bool, string, int+&gt;](#listbool-string-int)
+  * [map&lt;string,int&gt; represented as
+struct&lt;int&gt;](#mapstringint-represented-as-structint)
+  * [map&lt;string,int&gt; represented as
+list&lt;pair&lt;string,int&gt;&gt;](#mapstringint-represented-as-listpairstringint)
 
 # Type System
 
@@ -259,9 +259,9 @@ such that a null value is valid.
 
 #### Ranges
 
-<code>range::[ *<RANGE_TYPE>*, *<RANGE_TYPE>* ]</code><br/>
-<code>range::[ min, *<RANGE_TYPE>* ]</code><br/>
-<code>range::[ *<RANGE_TYPE>*, max ]</code><br/>
+<code>range::[ <i>&lt;RANGE_TYPE&gt;</i>, <i>&lt;RANGE_TYPE&gt;</i> ]</code><br/>
+<code>range::[ min, <i>&lt;RANGE_TYPE&gt;</i> ]</code><br/>
+<code>range::[ <i>&lt;RANGE_TYPE&gt;</i>, max ]</code><br/>
 <code>range::[ min, max ]</code>
 
 Some constraints can be defined by a range. A range is represented by a
@@ -282,8 +282,6 @@ range::[5.5, 7.9]                      // between 5.5 and 7.9, inclusive
 ```
 
 ## General Constraints
-
-```**annotations:** [ *<ANNOTATION\>...* ]```<br/>
 
 <code><b>annotations:</b> [ <i>&lt;ANNOTATION&gt;...</i> ]</code><br/>
 <code><b>annotations:</b> required::[ <i>&lt;ANNOTATION&gt;...</i> ]</code><br/>
@@ -315,7 +313,7 @@ annotations: required::ordered::[one, optional::two, three]
 
 Indicates the type that a value shall be validated against. The core
 types do not include null (weak- or strong-typed); for cases in which
-null is a desired value, annotate the <code>*<TYPE_REFERENCE>*</code>
+null is a desired value, annotate the <code><i>&lt;TYPE_REFERENCE&gt;</i></code>
 with `nullable`. When a strongly-typed null value is encountered, its
 type must agree with the expected type (e.g., if a `nullable::int` is
 expected, `5`, `null`, `null.null`, and `null.int` are valid, but
@@ -328,8 +326,8 @@ expected, `5`, `null`, `null.null`, and `null.int` are valid, but
 
 ### valid_values
 
-<code>**valid_values:** [ *<VALUE\>...* ]</code><br/>
-<code>**valid_values:** *<RANGE<NUMBER\>\>*</code>
+<code><b>valid_values:</b> [ <i>&lt;VALUE&gt;...</i> ]</code><br/>
+<code><b>valid_values:</b> <i>&lt;RANGE&lt;NUMBER&gt;&gt;</i></code>
 
 A list of acceptable, non-annotated values;  any values not present
 in the list are invalid. Whether a particular value matches
@@ -359,8 +357,8 @@ valid_values: [1, 2, 3, null, null.int]
 
 ### byte_length
 
-<code>**byte_length:** *<INT\>*</code><br/>
-<code>**byte_length:** *<RANGE<INT\>\>*</code>
+<code><b>byte_length:</b> <i>&lt;INT&gt;</i></code><br/>
+<code><b>byte_length:</b> <i>&lt;RANGE&lt;INT&gt;&gt;</i></code>
 
 The exact or minimum/maximum number of bytes in a blob or clob (note
 that this constrains the number of bytes in the input source, which
@@ -378,8 +376,8 @@ byte_length: range::[10, 100]
 
 ### codepoint_length
 
-<code>**codepoint_length:** *<INT\>*</code><br/>
-<code>**codepoint_length:** *<RANGE<INT\>\>*</code>
+<code><b>codepoint_length:</b> <i>&lt;INT&gt;</i></code><br/>
+<code><b>codepoint_length:</b> <i>&lt;RANGE&lt;INT&gt;&gt;</i></code>
 
 The exact or minimum/maximum number of Unicode codepoints
 in a string or symbol.  Note that characters are a complex
@@ -395,10 +393,10 @@ codepoint_length: range::[10, 100]
 
 ### regex
 
-<code>**regex:** *<STRING\>*</code><br/>
-<code>**regex:** i::*<STRING\>*</code><br/>
-<code>**regex:** m::*<STRING\>*</code><br/>
-<code>**regex:** i::m::*<STRING\>*</code>
+<code><b>regex:</b> <i>&lt;STRING&gt;</i></code><br/>
+<code><b>regex:</b> i::<i>&lt;STRING&gt;</i></code><br/>
+<code><b>regex:</b> m::<i>&lt;STRING&gt;</i></code><br/>
+<code><b>regex:</b> i::m::<i>&lt;STRING&gt;</i></code>
 
 A string that conforms to a *RegularExpressionBody* defined by
 [ECMA 262 Regular Expressions](https://www.ecma-international.org/ecma-262/5.1/#sec-7.8.5).
@@ -446,8 +444,8 @@ regular expression string; supported flags shall include:
 
 ### precision
 
-<code>**precision:** *<INT\>*</code><br/>
-<code>**precision:** *<RANGE<INT\>\>*</code>
+<code><b>precision:</b> <i>&lt;INT&gt;</i></code><br/>
+<code><b>precision:</b> <i>&lt;RANGE&lt;INT&gt;&gt;</i></code>
 
 An exact or minimum/maximum indicating the number of digits in the
 unscaled value of a decimal. The minimum precision must be greater than
@@ -462,8 +460,8 @@ or equal to `1`.
 
 ### scale
 
-<code>**scale:** *<INT\>*</code><br/>
-<code>**scale:** *<RANGE<INT\>\>*</code>
+<code><b>scale:</b> <i>&lt;INT&gt;</i></code><br/>
+<code><b>scale:</b> <i>&lt;RANGE&lt;INT&gt;&gt;</i></code>
 
 An exact or minimum/maximum range indicating the number of digits to
 the right of the decimal point. The minimum scale must be greater than
@@ -480,7 +478,7 @@ or equal to `0`.
 
 ### timestamp_offset
 
-<code>**timestamp_offset:** [ *"[+|-]hh:mm"...* ]</code>
+<code><b>timestamp_offset:</b> [ <i>"[+|-]hh:mm"...</i> ]</code>
 
 Limits the timestamp offsets that are allowed. A offset is specified
 as a string of the form `"[+|-]hh:mm"`, where `hh` is a two digit number
@@ -495,8 +493,8 @@ and 59, inclusive.
 
 ### timestamp_precision
 
-<code>**timestamp_precision:** *<TIMESTAMP_PRECISION_VALUE\>*</code><br/>
-<code>**timestamp_precision:** *<RANGE<TIMESTAMP_PRECISION_VALUE\>\>*</code>
+<code><b>timestamp_precision:</b> <i>&lt;TIMESTAMP_PRECISION_VALUE&gt;</i></code><br/>
+<code><b>timestamp_precision:</b> <i>&lt;RANGE&lt;TIMESTAMP_PRECISION_VALUE&gt;&gt;</i></code>
 
 Indicates the exact or minimum/maximum (inclusive) precision of a
 timestamp. Valid precision values are, in order of increasing precision:
@@ -519,8 +517,8 @@ structs, and documents.
 
 ### container_length
 
-<code>**container_length:** *<INT\>*</code><br/>
-<code>**container_length:** *<RANGE<INT\>\>*</code>
+<code><b>container_length:</b> <i>&lt;INT&gt;</i></code><br/>
+<code><b>container_length:</b> <i>&lt;RANGE&lt;INT&gt;&gt;</i></code>
 
 The exact or minimum/maximum number of elements in a list or
 S-expression, or fields in a struct.
@@ -534,7 +532,7 @@ S-expression, or fields in a struct.
 
 ### content
 
-<code>**content:** closed</code>
+<code><b>content:</b> closed</code>
 
 The default behavior for containers is to allow "open" content,
 meaning that it is valid to provide additional elements in a list or
@@ -550,7 +548,7 @@ are not allowed.
 
 ### element
 
-<code>**element:** *<TYPE_REFERENCE\>*</code><br/>
+<code><b>element:</b> <i>&lt;TYPE_REFERENCE&gt;</i></code><br/>
 
 Defines the type and/or constraints for all values within a
 homogeneous list, S-expression, or struct.
@@ -562,10 +560,10 @@ homogeneous list, S-expression, or struct.
 
 ### occurs
 
-<code>**occurs:** *<INT\>*</code><br/>
-<code>**occurs:** *<RANGE<INT\>\>*</code><br/>
-<code>**occurs:** optional</code><br/>
-<code>**occurs:** required</code>
+<code><b>occurs:</b> <i>&lt;INT&gt;</i></code><br/>
+<code><b>occurs:</b> <i>&lt;RANGE&lt;INT&gt;&gt;</i></code><br/>
+<code><b>occurs:</b> optional</code><br/>
+<code><b>occurs:</b> required</code>
 
 Applicable only within the context of `ordered_elements` and struct
 field constraints; indicates either the exact or minimum/maximum
@@ -587,7 +585,7 @@ value `1` (or `range::[1, 1]`).
 
 ### contains
 
-<code>**contains:** [ *<VALUE\>...* ]</code>
+<code><b>contains:</b> [ <i>&lt;VALUE&gt;...</i> ]</code>
 
 Indicates that the list or S-expression is expected to contain all of
 the specified values, in no particular order.
@@ -599,7 +597,7 @@ the specified values, in no particular order.
 
 ### ordered_elements
 
-<code>**ordered_elements:** [ *<TYPE_REFERENCE\>...* ]</code>
+<code><b>ordered_elements:</b> [ <i>&lt;TYPE_REFERENCE&gt;...</i> ]</code>
 
 Defines constraints over a list of values in a heterogeneous list,
 S-expression, or document. Each value in a list, S-expression, or document
@@ -630,12 +628,12 @@ type is performed greedily before proceeding to the next type.
 
 ### fields
 
-<code>**fields:** { *<FIELD\>...* }</code>
+<code><b>fields:</b> { <i>&lt;FIELD&gt;...</i> }</code>
 
-Declares one or more field constraints of a struct, where <FIELD\>
+Declares one or more field constraints of a struct, where <FIELD&gt;
 is defined as:
 
-<code>*<SYMBOL\>*: *<TYPE_REFERENCE>*</code>
+<code><i>&lt;SYMBOL&gt;</i>: <i>&lt;TYPE_REFERENCE&gt;</i></code>
 
 Field names defined for a particular struct type shall be unique.
 A field may narrow its declared type by specifying additional
@@ -655,7 +653,7 @@ one or more types.
 
 ### all_of
 
-<code>**all_of:** [ *<TYPE_REFERENCE\>...* ]</code>
+<code><b>all_of:</b> [ <i>&lt;TYPE_REFERENCE&gt;...</i> ]</code>
 
 Value must be valid for all of the types.
 
@@ -669,7 +667,7 @@ Value must be valid for all of the types.
 
 ### any_of
 
-<code>**any_of:** [ *<TYPE_REFERENCE\>...* ]</code>
+<code><b>any_of:</b> [ <i>&lt;TYPE_REFERENCE&gt;...</i> ]</code>
 
 Value must be valid for one or more of the types.
 
@@ -684,7 +682,7 @@ Value must be valid for one or more of the types.
 
 ### one_of
 
-<code>**one_of:** [ *<TYPE_REFERENCE\>...* ]</code>
+<code><b>one_of:</b> [ <i>&lt;TYPE_REFERENCE&gt;...</i> ]</code>
 
 Value must be valid for exactly one of the types.
 
@@ -699,7 +697,7 @@ Value must be valid for exactly one of the types.
 
 ### not
 
-<code>**not:** *<TYPE_REFERENCE\>*</code>
+<code><b>not:</b> <i>&lt;TYPE_REFERENCE&gt;</i></code>
 
 Value must not be valid for the type.
 
@@ -716,7 +714,7 @@ corresponds to, although the only way to determine whether a value
 corresponds to a type is to validate the value against that type. By
 convention, a value may be annotated as follows:
 
-<code>*<ID\>*::*<TYPE_NAME\>*::*<VALUE\>*</code>
+<code><i>&lt;ID&gt;</i>::<i>&lt;TYPE_NAME&gt;</i>::<i>&lt;VALUE&gt;</i></code>
 
 # Implementation Considerations
 
