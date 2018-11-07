@@ -1,0 +1,17 @@
+name: Ion Schema
+title: Amazon Ion Schema
+description: Amazon Ion Schema defines a grammar and constraints for narrowing the universe of Ion values.
+lang: en
+baseurl: /ion-schema
+markdown: kramdown
+kramdown:
+  input: GFM
+  toc_levels: "2,3" 
+highlighter: rouge
+defaults:
+  -
+    scope:
+      path: ""
+    values:
+      layout: default
+
