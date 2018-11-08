@@ -2,7 +2,7 @@
 title: Amazon Ion Schema
 permalink: /
 ---
-Amazon Ion Schema defines a grammar and constraints for narrowing the universe of Ion values.  A schema consists of zero or more types, and a type is a collection of zero or more constraints over the Ion data model.  Aspects of a value not constrained by a type ("open content") are considered valid, which enables losely-coupled systems to evolve independently.
+Amazon Ion Schema defines a grammar and constraints for narrowing the universe of Ion values.  A schema consists of zero or more types, and a type is a collection of zero or more constraints over the Ion data model.  Aspects of a value not constrained by a type ("open content") are considered valid, which enables loosely-coupled systems to evolve independently.
 
 Once defined, a type can be used to:
 * assert that a value meets specific expectations,
