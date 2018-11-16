@@ -165,14 +165,14 @@ name as an imported type, this must result in an error.
 The structure of a `id` string (per the example above) is defined by
 the schema authority responsible for the schema/type(s) being imported.
 Note that runtime resolution of a schema over a network presents
-availability and security risks, and should thereby be avoided.
+availability and security risks, and should therefore be avoided.
 
 When resolving a schema, authorities may choose to follow well-known
 patterns; for example:
   - a filesystem authority might specify that an `id` string
     corresponds to an ISL file relative to some base, e.g.:
     `"{base}/com/example/core/Customer.isl"`
-  - a REST authority might specify that a `id` string is a resource
+  - a REST authority might specify that an `id` string is a resource
     URL that corresponds to an ISL file, e.g.:
     `"https://{host}:{port}/{base}/com/example/core/Customer"`
     (again, note the inherent availabilty and security risks here)
@@ -482,7 +482,7 @@ or equal to `0`.
 
 <code><b>timestamp_offset:</b> [ <i>"[+|-]hh:mm"...</i> ]</code>
 
-Limits the timestamp offsets that are allowed. A offset is specified
+Limits the timestamp offsets that are allowed. An offset is specified
 as a string of the form `"[+|-]hh:mm"`, where `hh` is a two digit number
 between 00 and 23, inclusive, and `mm` is a two digit number between 00
 and 59, inclusive.
@@ -729,7 +729,7 @@ convention, a value may be annotated as follows:
     mistakes) to be identified easily.
 
   - Runtime resolution of a schema over a network presents availability
-    and security risks, and should thereby be avoided.
+    and security risks, and should therefore be avoided.
 
   - Consider when warnings should be issued instead of errors (e.g.,
     if a schema authority is configured to reference a URL, or a type is
