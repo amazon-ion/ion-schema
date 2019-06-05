@@ -407,6 +407,7 @@ Regular expressions shall be limited to the following features:
 | | |
 | -------: | ------- |
 |          | Unicode codepoints match themselves |
+| `.`      | any codepoint |
 | `[abc]`  | codepoint class |
 | `[a-z]`  | range codepoint class |
 | `[^abc]` | complemented codepoint class |
@@ -418,15 +419,9 @@ Regular expressions shall be limited to the following features:
 | `?`      | zero or one |
 | `*`      | zero or more |
 | `+`      | one or more |
-| `??`     | zero or one (lazy) |
-| `*?`     | zero or more (lazy) |
-| `+?`     | one or more (lazy) |
 | `{x}`    | exactly x occurrences |
 | `{x,}`   | at least x occurrences |
 | `{x,y}`  | at least x and at most y occurrences |
-| `{x}?`   | exactly x occurrences (lazy) |
-| `{x,}?`  | at least x occurrences (lazy) |
-| `{x,y}?` | at least x and at most y occurrences (lazy) |
 
 Regular expression flags may be specified as annotations on the
 regular expression string; supported flags shall include:
@@ -436,10 +431,23 @@ regular expression string; supported flags shall include:
 | `i`  | case insensitive |
 | `m`  | ^ and $ match at line breaks |
 
+The following classes are provided:
+
+| | |
+| `\d` | digit: `[0-9]` |
+| `\D` | non-digit |
+| `\s` | whitespace: `[ \f\n\r\t]` |
+| `\S` | non-whitespace |
+| `\w` | word character: `([A-Z]|[a-z]|[0-9]|_)` |
+| `\W` | non-word character |
+
+The following characters may be escaped with a backslash:  `. ^ $ | ? * + \ [ ] ( ) { }`.  Note that in Ion text a backslash must itself be escaped, so correct escaping of these characters requires two backslashes, e.g.:  `\\.`.
+
 > ```
 > regex: "M(iss){2}ippi"
 > regex: i::"susie"
 > regex: i::m::"^B[0-9]{9}$"
+> regex: "\\$\\d+\\.\\d\\d"
 > ```
 
 ## Decimal Constraints
