@@ -6,5 +6,5 @@ title: Libraries
 
 | Name | Latest Version | Repository |
 |------|----------------|------|
-| ion-schema-kotlin | [1.0.0](https://github.com/amzn/ion-schema-kotlin/releases/tag/v1.0.0) (July 15, 2019) | [Link](https://github.com/amzn/ion-schema-kotlin) |
+| ion-schema-kotlin | [1.0.1](https://github.com/amzn/ion-schema-kotlin/releases/latest) (July 15, 2019) | [Link](https://github.com/amzn/ion-schema-kotlin) |
 
