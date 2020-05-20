@@ -438,7 +438,7 @@ The following classes are provided:
 | `\D` | non-digit |
 | `\s` | whitespace: `[ \f\n\r\t]` |
 | `\S` | non-whitespace |
-| `\w` | word character: `([A-Z]|[a-z]|[0-9]|_)` |
+| `\w` | word character: `[A-Za-z0-9_]` |
 | `\W` | non-word character |
 
 The following characters may be escaped with a backslash:  `. ^ $ | ? * + \ [ ] ( ) { }`.  Note that in Ion text a backslash must itself be escaped, so correct escaping of these characters requires two backslashes, e.g.:  `\\.`.
