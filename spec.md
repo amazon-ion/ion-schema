@@ -262,7 +262,6 @@ such that a null value is valid.
 <code>range::[ <i>&lt;RANGE_TYPE&gt;</i>, <i>&lt;RANGE_TYPE&gt;</i> ]</code><br/>
 <code>range::[ min, <i>&lt;RANGE_TYPE&gt;</i> ]</code><br/>
 <code>range::[ <i>&lt;RANGE_TYPE&gt;</i>, max ]</code><br/>
-<code>range::[ min, max ]</code>
 
 Some constraints can be defined by a range. A range is represented by a
 list annotated with `range`, and containing two values, in order: the
@@ -272,6 +271,7 @@ the minimum or maximum (or both) values shall be annotated with `exclusive`.
 If the minimum or maximum end of a range is to be unspecified, this shall
 be represented by the symbols `min` or `max`, respectively; the `exclusive`
 annotation is not applicable when the symbols `min` or `max` are specified.
+A range may not contain both `min` and `max`.
 
 > ```
 > range::[5, max]                        // minimum 5, maximum unbound
@@ -842,7 +842,6 @@ This section provides a BNF-style grammar for the Ion Schema Language.
 <RANGE<RANGE_TYPE>> ::= range::[ <RANGE_TYPE>, <RANGE_TYPE> ]
                       | range::[ min, <RANGE_TYPE> ]
                       | range::[ <RANGE_TYPE>, max ]
-                      | range::[ min, max ]
 
 <CONSTRAINT> ::= <ALL_OF>
                | <ANNOTATIONS>
