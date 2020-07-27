@@ -499,8 +499,8 @@ and 59, inclusive.
 <code><b>timestamp_precision:</b> <i>&lt;TIMESTAMP_PRECISION_VALUE&gt;</i></code><br/>
 <code><b>timestamp_precision:</b> <i>&lt;RANGE&lt;TIMESTAMP_PRECISION_VALUE&gt;&gt;</i></code>
 
-Indicates the exact or minimum/maximum (inclusive) precision of a
-timestamp. Valid precision values are, in order of increasing precision:
+Indicates the exact or minimum/maximum precision of a timestamp.
+Valid precision values are, in order of increasing precision:
 `year`, `month`, `day`, `minute`, `second`, `millisecond`, `microsecond`, and `nanosecond`.
 
 > ```
@@ -509,6 +509,8 @@ timestamp. Valid precision values are, in order of increasing precision:
 > timestamp_precision: range::[month, max]
 > timestamp_precision: range::[min, day]
 > timestamp_precision: range::[second, nanosecond]
+> timestamp_precision: range::[exclusive::second, max]  // any timestamp with fractional seconds is allowed
+> timestamp_precision: range::[exclusive::second, exclusive::millisecond]  // only timestamps with a precision of tenths or hundredths of a second are allowed
 > timestamp_precision: range::[month, day]
 > timestamp_precision: range::[year, day]
 > ```
