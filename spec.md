@@ -274,11 +274,12 @@ annotation is not applicable when the symbols `min` or `max` are specified.
 A range may not contain both `min` and `max`.
 
 > ```
-> range::[5, max]                        // minimum 5, maximum unbound
-> range::[min, 7]                        // minimum unbound, maximum 7
-> range::[5, 7]                          // between 5 and 7, inclusive
-> range::[exclusive::5, exclusive::7]    // only 6 is valid
-> range::[5.5, 7.9]                      // between 5.5 and 7.9, inclusive
+> range::[5, max]                               // minimum 5, maximum unbound
+> range::[min, 7]                               // minimum unbound, maximum 7
+> range::[5, 7]                                 // between 5 and 7, inclusive
+> range::[exclusive::5, exclusive::7]           // only 6 is valid
+> range::[5.5, 7.9]                             // between 5.5 and 7.9, inclusive
+> range::[2019-01-01T, exclusive::2020-01-01T]  // any timestamp in the year 2019
 > ```
 
 ## General Constraints
@@ -837,6 +838,7 @@ This section provides a BNF-style grammar for the Ion Schema Language.
                | <FLOAT>
                | <INT>
                | <NUMBER>
+               | <TIMESTAMP>
                | <TIMESTAMP_PRECISION_VALUE>
 
 <EXCLUSIVITY> ::= exclusive::
@@ -939,6 +941,7 @@ This section provides a BNF-style grammar for the Ion Schema Language.
 
 <VALID_VALUES> ::= valid_values: [ <VALUE>... ]
                  | valid_values: <RANGE<NUMBER>>
+                 | valid_values: <RANGE<TIMESTAMP>>
 
 ```
 
