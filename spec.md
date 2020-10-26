@@ -288,6 +288,7 @@ A range may not contain both `min` and `max`.
 
 <code><b>annotations:</b> [ <i>&lt;ANNOTATION&gt;...</i> ]</code><br/>
 <code><b>annotations:</b> required::[ <i>&lt;ANNOTATION&gt;...</i> ]</code><br/>
+<code><b>annotations:</b> closed::[ <i>&lt;ANNOTATION&gt;...</i> ]</code><br/>
 <code><b>annotations:</b> ordered::[ <i>&lt;ANNOTATION&gt;...</i> ]</code>
 
 Indicates the annotations that may be specified on values of the type.
@@ -296,17 +297,24 @@ overridden by annotating the annotations list with `required`.
 Additionally, each annotation may be annotated with `optional` or
 `required` to override the list-level behavior. If annotations must be
 applied to values in the specified order, the list of annotations may
-be annotated with `ordered`. If there are multiple annotations on the
-annotations list, they may be specified in any order.
+be annotated with `ordered`.
+
+The `required`, `closed`, and `ordered` annotations may be specified in any order.
 
 Note that annotations represent metadata for a value, and
 additional annotations on a value are valid independent of
-whether a type is constrained by `content: closed`.
+whether a type is constrained by `content: closed`. Additional
+annotations can only be constrained by adding the `closed`
+annotation to the list of valid annotations.
 
 > ```
 > annotations: [red, required::green, blue]
 > annotations: required::[red, optional::green, blue]
 > annotations: required::ordered::[one, optional::two, three]
+> annotations: closed::required::[red, green, blue] // Annotations must contain exactly "red", "green", and "blue" in any order
+> annotations: closed::ordered::[red, green, blue] // Annotations must contain exactly "red", "green", and "blue" in that order
+> annotations: closed::[red, blue] // Only the annotations "red" and "blue" are permitted, but they are not required
+> annotations: closed::[] // No annotations are permitted
 > ```
 
 ### type
@@ -878,9 +886,11 @@ This section provides a BNF-style grammar for the Ion Schema Language.
                | required::<SYMBOL>
                | optional::<SYMBOL>
 
-<ANNOTATIONS> ::= annotations: [ <ANNOTATION>... ]
-                | annotations: required::[ <ANNOTATION>... ]
-                | annotations: ordered::[ <ANNOTATION>... ]
+<ANNOTATIONS_MODIFIER> ::= required::
+                         | ordered::
+                         | closed::
+
+<ANNOTATIONS> ::= annotations: <ANNOTATIONS_MODIFIER>... [ <ANNOTATION>... ]
 
 <ANY_OF> ::= any_of: [ <TYPE_REFERENCE>... ]
 
