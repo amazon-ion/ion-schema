@@ -451,6 +451,20 @@ regular expression string; supported flags shall include:
 > regex: i::m::"^B[0-9]{9}$"
 > ```
 
+### utf8_byte_length
+
+<code><b>utf8_byte_length:</b> <i>&lt;INT&gt;</i></code><br/>
+<code><b>utf8_byte_length:</b> <i>&lt;RANGE&lt;INT&gt;&gt;</i></code>
+
+An exact or minimum/maximum indicating number of bytes in the UTF8 representation of a string or symbol.
+
+> ```
+> utf8_byte_length: 5
+> utf8_byte_length: range::[10, max]
+> utf8_byte_length: range::[min, 100]
+> utf8_byte_length: range::[10, 100]
+> ```
+
 ## Decimal Constraints
 
 ### precision
