@@ -259,9 +259,9 @@ such that a null value is valid.
 
 #### Ranges
 
-<code>range::[ <i>&lt;RANGE_TYPE&gt;</i>, <i>&lt;RANGE_TYPE&gt;</i> ]</code><br/>
-<code>range::[ min, <i>&lt;RANGE_TYPE&gt;</i> ]</code><br/>
-<code>range::[ <i>&lt;RANGE_TYPE&gt;</i>, max ]</code><br/>
+<code>range::[ <i>&lt;EXCLUSIVITY&gt;&lt;RANGE_TYPE&gt;</i>, <i>&lt;EXCLUSIVITY&gt;&lt;RANGE_TYPE&gt;</i> ]</code><br/>
+<code>range::[ min, <i>&lt;EXCLUSIVITY&gt;&lt;RANGE_TYPE&gt;</i> ]</code><br/>
+<code>range::[ <i>&lt;EXCLUSIVITY&gt;&lt;RANGE_TYPE&gt;</i>, max ]</code><br/>
 
 Some constraints can be defined by a range. A range is represented by a
 list annotated with `range`, and containing two values, in order: the
@@ -847,9 +847,12 @@ This section provides a BNF-style grammar for the Ion Schema Language.
                | <NUMBER>
                | <TIMESTAMP_PRECISION_VALUE>
 
-<RANGE<RANGE_TYPE>> ::= range::[ <RANGE_TYPE>, <RANGE_TYPE> ]
-                      | range::[ min, <RANGE_TYPE> ]
-                      | range::[ <RANGE_TYPE>, max ]
+<EXCLUSIVITY> ::= exclusive::
+                | ""
+
+<RANGE<RANGE_TYPE>> ::= range::[ <EXCLUSIVITY><RANGE_TYPE>, <EXCLUSIVITY><RANGE_TYPE> ]
+                      | range::[ min, <EXCLUSIVITY><RANGE_TYPE> ]
+                      | range::[ <EXCLUSIVITY><RANGE_TYPE>, max ]
 
 <CONSTRAINT> ::= <ALL_OF>
                | <ANNOTATIONS>
