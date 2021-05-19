@@ -277,7 +277,7 @@ A range may not contain both `min` and `max`.
 > range::[5, max]                               // minimum 5, maximum unbound
 > range::[min, 7]                               // minimum unbound, maximum 7
 > range::[5, 7]                                 // between 5 and 7, inclusive
-> range::[exclusive::5, exclusive::7]           // only 6 is valid
+> range::[exclusive::5, exclusive::7]           // between 5 and 7, exclusive; if type is also constrained to be an int, only 6 is allowed
 > range::[5.5, 7.9]                             // between 5.5 and 7.9, inclusive
 > range::[2019-01-01T, exclusive::2020-01-01T]  // any timestamp in the year 2019
 > ```
