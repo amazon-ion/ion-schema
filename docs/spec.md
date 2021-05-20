@@ -273,10 +273,19 @@ be represented by the symbols `min` or `max`, respectively; the `exclusive`
 annotation is not applicable when the symbols `min` or `max` are specified.
 A range may not contain both `min` and `max`.
 
+Also, if a range is a `number` range (i.e. type is not constrained) then it allows all the `integer`, `float`, 
+`decimal` values that falls inside the range. For example, even if the range mentioned itself contains just the
+`integer` values as the `min` and `max` bounds of the range, all the `floats` and `decimals` falling within the 
+range are allowed as well.
+
+For `number` and `timestamp` ranges, the value order is determined by converting them to `big decimal` and then
+ checking if the given item falls within that range. When a `timestamp` range is specified, neither end of the range
+  may have an unknown local offset.
+
 > ```
 > range::[5, max]                               // minimum 5, maximum unbound
 > range::[min, 7]                               // minimum unbound, maximum 7
-> range::[5, 7]                                 // between 5 and 7, inclusive
+> range::[5, 7]                                 // between 5 and 7, inclusive, if type is not constrained to be an int, not only 5, 6, 7 but 5.1, 5.2,... all int, float and decimal values within the range are allowed
 > range::[exclusive::5, exclusive::7]           // between 5 and 7, exclusive; if type is also constrained to be an int, only 6 is allowed
 > range::[5.5, 7.9]                             // between 5.5 and 7.9, inclusive
 > range::[2019-01-01T, exclusive::2020-01-01T]  // any timestamp in the year 2019
@@ -338,7 +347,8 @@ expected, `5`, `null`, `null.null`, and `null.int` are valid, but
 ### valid_values
 
 <code><b>valid_values:</b> [ <i>&lt;VALUE&gt;...</i> ]</code><br/>
-<code><b>valid_values:</b> <i>&lt;RANGE&lt;NUMBER&gt;&gt;</i></code>
+<code><b>valid_values:</b> <i>&lt;RANGE&lt;NUMBER&gt;&gt;</i></code><br/>
+<code><b>valid_values:</b> <i>&lt;RANGE&lt;TIMESTAMP&gt;&gt;</i></code>
 
 A list of acceptable, non-annotated values;  any values not present
 in the list are invalid. Whether a particular value matches
