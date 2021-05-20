@@ -165,14 +165,14 @@ name as an imported type, this must result in an error.
 The structure of a `id` string (per the example above) is defined by
 the schema authority responsible for the schema/type(s) being imported.
 Note that runtime resolution of a schema over a network presents
-availability and security risks, and should thereby be avoided.
+availability and security risks, and should therefore be avoided.
 
 When resolving a schema, authorities may choose to follow well-known
 patterns; for example:
   - a filesystem authority might specify that an `id` string
     corresponds to an ISL file relative to some base, e.g.:
     `"{base}/com/example/core/Customer.isl"`
-  - a REST authority might specify that a `id` string is a resource
+  - a REST authority might specify that an `id` string is a resource
     URL that corresponds to an ISL file, e.g.:
     `"https://{host}:{port}/{base}/com/example/core/Customer"`
     (again, note the inherent availabilty and security risks here)
@@ -259,10 +259,9 @@ such that a null value is valid.
 
 #### Ranges
 
-<code>range::[ <i>&lt;RANGE_TYPE&gt;</i>, <i>&lt;RANGE_TYPE&gt;</i> ]</code><br/>
-<code>range::[ min, <i>&lt;RANGE_TYPE&gt;</i> ]</code><br/>
-<code>range::[ <i>&lt;RANGE_TYPE&gt;</i>, max ]</code><br/>
-<code>range::[ min, max ]</code>
+<code>range::[ <i>&lt;EXCLUSIVITY&gt;&lt;RANGE_TYPE&gt;</i>, <i>&lt;EXCLUSIVITY&gt;&lt;RANGE_TYPE&gt;</i> ]</code><br/>
+<code>range::[ min, <i>&lt;EXCLUSIVITY&gt;&lt;RANGE_TYPE&gt;</i> ]</code><br/>
+<code>range::[ <i>&lt;EXCLUSIVITY&gt;&lt;RANGE_TYPE&gt;</i>, max ]</code><br/>
 
 Some constraints can be defined by a range. A range is represented by a
 list annotated with `range`, and containing two values, in order: the
@@ -272,13 +271,15 @@ the minimum or maximum (or both) values shall be annotated with `exclusive`.
 If the minimum or maximum end of a range is to be unspecified, this shall
 be represented by the symbols `min` or `max`, respectively; the `exclusive`
 annotation is not applicable when the symbols `min` or `max` are specified.
+A range may not contain both `min` and `max`.
 
 > ```
-> range::[5, max]                        // minimum 5, maximum unbound
-> range::[min, 7]                        // minimum unbound, maximum 7
-> range::[5, 7]                          // between 5 and 7, inclusive
-> range::[exclusive::5, exclusive::7]    // only 6 is valid
-> range::[5.5, 7.9]                      // between 5.5 and 7.9, inclusive
+> range::[5, max]                               // minimum 5, maximum unbound
+> range::[min, 7]                               // minimum unbound, maximum 7
+> range::[5, 7]                                 // between 5 and 7, inclusive
+> range::[exclusive::5, exclusive::7]           // between 5 and 7, exclusive; if type is also constrained to be an int, only 6 is allowed
+> range::[5.5, 7.9]                             // between 5.5 and 7.9, inclusive
+> range::[2019-01-01T, exclusive::2020-01-01T]  // any timestamp in the year 2019
 > ```
 
 ## General Constraints
@@ -287,6 +288,7 @@ annotation is not applicable when the symbols `min` or `max` are specified.
 
 <code><b>annotations:</b> [ <i>&lt;ANNOTATION&gt;...</i> ]</code><br/>
 <code><b>annotations:</b> required::[ <i>&lt;ANNOTATION&gt;...</i> ]</code><br/>
+<code><b>annotations:</b> closed::[ <i>&lt;ANNOTATION&gt;...</i> ]</code><br/>
 <code><b>annotations:</b> ordered::[ <i>&lt;ANNOTATION&gt;...</i> ]</code>
 
 Indicates the annotations that may be specified on values of the type.
@@ -295,17 +297,24 @@ overridden by annotating the annotations list with `required`.
 Additionally, each annotation may be annotated with `optional` or
 `required` to override the list-level behavior. If annotations must be
 applied to values in the specified order, the list of annotations may
-be annotated with `ordered`. If there are multiple annotations on the
-annotations list, they may be specified in any order.
+be annotated with `ordered`.
+
+The `required`, `closed`, and `ordered` annotations may be specified in any order.
 
 Note that annotations represent metadata for a value, and
 additional annotations on a value are valid independent of
-whether a type is constrained by `content: closed`.
+whether a type is constrained by `content: closed`. Additional
+annotations can only be constrained by adding the `closed`
+annotation to the list of valid annotations.
 
 > ```
 > annotations: [red, required::green, blue]
 > annotations: required::[red, optional::green, blue]
 > annotations: required::ordered::[one, optional::two, three]
+> annotations: closed::required::[red, green, blue] // Annotations must contain exactly "red", "green", and "blue" in any order
+> annotations: closed::ordered::[red, green, blue] // Annotations must contain exactly "red", "green", and "blue" in that order
+> annotations: closed::[red, blue] // Only the annotations "red" and "blue" are permitted, but they are not required
+> annotations: closed::[] // No annotations are permitted
 > ```
 
 ### type
@@ -450,6 +459,20 @@ The following characters may be escaped with a backslash:  `. ^ $ | ? * + \ [ ] 
 > regex: "\\$\\d+\\.\\d\\d"
 > ```
 
+### utf8_byte_length
+
+<code><b>utf8_byte_length:</b> <i>&lt;INT&gt;</i></code><br/>
+<code><b>utf8_byte_length:</b> <i>&lt;RANGE&lt;INT&gt;&gt;</i></code>
+
+An exact or minimum/maximum indicating number of bytes in the UTF8 representation of a string or symbol.
+
+> ```
+> utf8_byte_length: 5
+> utf8_byte_length: range::[10, max]
+> utf8_byte_length: range::[min, 100]
+> utf8_byte_length: range::[10, 100]
+> ```
+
 ## Decimal Constraints
 
 ### precision
@@ -490,7 +513,7 @@ or equal to `0`.
 
 <code><b>timestamp_offset:</b> [ <i>"[+|-]hh:mm"...</i> ]</code>
 
-Limits the timestamp offsets that are allowed. A offset is specified
+Limits the timestamp offsets that are allowed. An offset is specified
 as a string of the form `"[+|-]hh:mm"`, where `hh` is a two digit number
 between 00 and 23, inclusive, and `mm` is a two digit number between 00
 and 59, inclusive.
@@ -506,8 +529,8 @@ and 59, inclusive.
 <code><b>timestamp_precision:</b> <i>&lt;TIMESTAMP_PRECISION_VALUE&gt;</i></code><br/>
 <code><b>timestamp_precision:</b> <i>&lt;RANGE&lt;TIMESTAMP_PRECISION_VALUE&gt;&gt;</i></code>
 
-Indicates the exact or minimum/maximum (inclusive) precision of a
-timestamp. Valid precision values are, in order of increasing precision:
+Indicates the exact or minimum/maximum precision of a timestamp.
+Valid precision values are, in order of increasing precision:
 `year`, `month`, `day`, `minute`, `second`, `millisecond`, `microsecond`, and `nanosecond`.
 
 > ```
@@ -516,6 +539,8 @@ timestamp. Valid precision values are, in order of increasing precision:
 > timestamp_precision: range::[month, max]
 > timestamp_precision: range::[min, day]
 > timestamp_precision: range::[second, nanosecond]
+> timestamp_precision: range::[exclusive::second, max]  // any timestamp with fractional seconds is allowed
+> timestamp_precision: range::[exclusive::second, exclusive::millisecond]  // only timestamps with a precision of tenths or hundredths of a second are allowed
 > timestamp_precision: range::[month, day]
 > timestamp_precision: range::[year, day]
 > ```
@@ -737,7 +762,7 @@ convention, a value may be annotated as follows:
     mistakes) to be identified easily.
 
   - Runtime resolution of a schema over a network presents availability
-    and security risks, and should thereby be avoided.
+    and security risks, and should therefore be avoided.
 
   - Consider when warnings should be issued instead of errors (e.g.,
     if a schema authority is configured to reference a URL, or a type is
@@ -845,12 +870,15 @@ This section provides a BNF-style grammar for the Ion Schema Language.
                | <FLOAT>
                | <INT>
                | <NUMBER>
+               | <TIMESTAMP>
                | <TIMESTAMP_PRECISION_VALUE>
 
-<RANGE<RANGE_TYPE>> ::= range::[ <RANGE_TYPE>, <RANGE_TYPE> ]
-                      | range::[ min, <RANGE_TYPE> ]
-                      | range::[ <RANGE_TYPE>, max ]
-                      | range::[ min, max ]
+<EXCLUSIVITY> ::= exclusive::
+                | ""
+
+<RANGE<RANGE_TYPE>> ::= range::[ <EXCLUSIVITY><RANGE_TYPE>, <EXCLUSIVITY><RANGE_TYPE> ]
+                      | range::[ min, <EXCLUSIVITY><RANGE_TYPE> ]
+                      | range::[ <EXCLUSIVITY><RANGE_TYPE>, max ]
 
 <CONSTRAINT> ::= <ALL_OF>
                | <ANNOTATIONS>
@@ -880,9 +908,11 @@ This section provides a BNF-style grammar for the Ion Schema Language.
                | required::<SYMBOL>
                | optional::<SYMBOL>
 
-<ANNOTATIONS> ::= annotations: [ <ANNOTATION>... ]
-                | annotations: required::[ <ANNOTATION>... ]
-                | annotations: ordered::[ <ANNOTATION>... ]
+<ANNOTATIONS_MODIFIER> ::= required::
+                         | ordered::
+                         | closed::
+
+<ANNOTATIONS> ::= annotations: <ANNOTATIONS_MODIFIER>... [ <ANNOTATION>... ]
 
 <ANY_OF> ::= any_of: [ <TYPE_REFERENCE>... ]
 
@@ -945,6 +975,7 @@ This section provides a BNF-style grammar for the Ion Schema Language.
 
 <VALID_VALUES> ::= valid_values: [ <VALUE>... ]
                  | valid_values: <RANGE<NUMBER>>
+                 | valid_values: <RANGE<TIMESTAMP>>
 
 ```
 
