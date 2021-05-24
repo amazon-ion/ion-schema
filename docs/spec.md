@@ -100,7 +100,7 @@ The core types do not include any of Ion's `null.*` values, but each of the
 types may have a weakly- or strongly-typed null value if the type name
 is annotated with `nullable`. When a strongly-typed null value is
 encountered, its type must agree with one of the core types of the
-expected type. For example, if a `nullable::any_of[int, string,
+expected type. For example, if a `any_of: nullable::[int, string,
 struct]` is expected, `5`, `"hi"`, `{}`, `null`, `null.null`, `null.int`,
 `null.string`, and `null.struct` are all valid values, but `null.decimal` is
 not.
