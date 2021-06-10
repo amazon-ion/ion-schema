@@ -291,28 +291,28 @@ A `timestamp` with limited precision (for example, a year-only timestamp like `2
 that all unspecified time unit fields are effectively zero (or one for the month and
 day units). `2007T` would map to the instant represented by `2007-01-01T00:00.000-00:00`. 
 Note that `timestamp` values that do not have a time component (that is: `YYYYT`, `YYYY-MMT`, and `YYYY-MM-DDT` 
-timestamps) have an unknown offset (`-00:00`). The timestamps that have an unknown offset are UTC timestamps that
+timestamps) have an unknown offset (`-00:00`). Timestamps that have an unknown offset are UTC timestamps that
 make no assertion about the offset in which they occurred.
    
 > ```
 >  // Timestamp                  Instant
->  2007T                      2007-01-01T00:00.000-00:00
->  2007-05T                   2007-05-01T00:00.000-00:00
->  2007-05-23T                2007-05-23T00:00.000-00:00
->  2007-05-23T:06:15Z         2007-05-01T06:15.000Z
->  2007-05-23T:06:15-00:00    2007-05-01T06:15.000-00:00
->  2007-05-23T:06:15+00:00    2007-05-01T06:15.000+00:00
->  2007-05-23T:06:15+05:00    2007-05-01T06:15.000+05:00
->  2007-05-23T:06:15.945Z     2007-05-01T06:15.945Z   
+>     2007T                      2007-01-01T00:00.000-00:00
+>     2007-05T                   2007-05-01T00:00.000-00:00
+>     2007-05-23T                2007-05-23T00:00.000-00:00
+>     2007-05-23T:06:15Z         2007-05-01T06:15.000Z
+>     2007-05-23T:06:15-00:00    2007-05-01T06:15.000-00:00
+>     2007-05-23T:06:15+00:00    2007-05-01T06:15.000+00:00
+>     2007-05-23T:06:15+05:00    2007-05-01T06:15.000+05:00
+>     2007-05-23T:06:15.945Z     2007-05-01T06:15.945Z   
 > ```
 
 A `timestamp` range includes any `timestamp` that falls between the minimum and maximum in chronological order. 
-The `timestamp` ranges do not include values of any other type.
+`timestamp` ranges do not include values of any other type.
 
 > ```
 > range::[5, max]                               // minimum 5, maximum unbound
 > range::[min, 7]                               // minimum unbound, maximum 7
-> range::[5, 7]                                 // between 5 and 7, inclusive, if type is not constrained to be an int, not only 5, 6, 7 but 5.1, 5.2,... all int, float and decimal values within the range are allowed
+> range::[5, 7]                                 // between 5 and 7, inclusive
 > range::[1.0, 10e]                             // mixing numeric types is allowed
 > range::[exclusive::5, exclusive::7]           // between 5 and 7, exclusive; if type is also constrained to be an int, only 6 is allowed
 > range::[5.5, 7.9]                             // between 5.5 and 7.9, inclusive
