@@ -141,7 +141,7 @@ schema_header::{         // optional
   ],
 }
 
-<TYPE_DEFINITION>...
+<NAMED_TYPE_DEFINITION>...
 
 schema_footer::{         // optional
 }
@@ -823,8 +823,8 @@ key decisions when creating this specification.
 This section provides a BNF-style grammar for the Ion Schema Language.
 
 ```
-<SCHEMA> ::= <TYPE_DEFINITION>...
-           | <HEADER> <TYPE_DEFINITION>... <FOOTER>
+<SCHEMA> ::= <NAMED_TYPE_DEFINITION>...
+           | <HEADER> <NAMED_TYPE_DEFINITION>... <FOOTER>
 
 <HEADER> ::= schema_header::{
   imports: [ <IMPORT>... ]
@@ -843,8 +843,10 @@ This section provides a BNF-style grammar for the Ion Schema Language.
 <FOOTER> ::= schema_footer::{
 }
 
-<TYPE_DEFINITION> ::= type::{ name: <TYPE_NAME>, <CONSTRAINT>... }
-                    | { <CONSTRAINT>... }
+<NAMED_TYPE_DEFINITION> ::= type::{ name: <TYPE_NAME>, <CONSTRAINT>... }
+
+<UNNAMED_TYPE_DEFINITION> ::= type::{ <CONSTRAINT>... }
+                            | { <CONSTRAINT>... }
 
 <ID> ::= <STRING>
        | <SYMBOL>
@@ -857,8 +859,8 @@ This section provides a BNF-style grammar for the Ion Schema Language.
                    | nullable::<TYPE_NAME>
                    |           <TYPE_ALIAS>
                    | nullable::<TYPE_ALIAS>
-                   |           <TYPE_DEFINITION>
-                   | nullable::<TYPE_DEFINITION>
+                   |           <UNNAMED_TYPE_DEFINITION>
+                   | nullable::<UNNAMED_TYPE_DEFINITION>
                    |           <IMPORT_TYPE>
                    | nullable::<IMPORT_TYPE>
 
