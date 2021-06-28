@@ -273,10 +273,47 @@ be represented by the symbols `min` or `max`, respectively; the `exclusive`
 annotation is not applicable when the symbols `min` or `max` are specified.
 A range may not contain both `min` and `max`.
 
+All ranges have a type. The type of the range is the same as that of the minimum and/or maximum values specified
+in the range list. If both a minimum and maximum values are specified (i.e. `min` and `max` are not used), then both of 
+those values must be of the same type. (For example, `range::[1995-12-06T, 55.4]` mixes values of the timestamp and 
+number types, and therefore is not a valid range.)
+
+##### RANGE&lt;NUMBER&gt;
+
+A `number` range includes all values of any numeric type (i.e. `float`, `int`, and `decimal`) that fall within that range mathematically. 
+When testing a value for inclusion, the range bounds and the value that is being tested will all be converted to
+`decimal` values for the sake of comparison. `number` ranges do not include values of any other type.
+
+##### RANGE&lt;TIMESTAMP&gt;
+
+All [`timestamp` values](https://amzn.github.io/ion-docs/docs/spec.html#timestamp) represent an instant in time. 
+A `timestamp` with limited precision (for example, a year-only timestamp like `2007T`) maps to an instant by assuming 
+that all unspecified time unit fields are effectively zero (or one for the month and
+day units). `2007T` would map to the instant represented by `2007-01-01T00:00.000-00:00`. 
+Note that `timestamp` values that do not have a time component (that is: `YYYYT`, `YYYY-MMT`, and `YYYY-MM-DDT` 
+timestamps) have an unknown offset (`-00:00`). Timestamps that have an unknown offset are UTC timestamps that
+make no assertion about the offset in which they occurred.
+   
+> ```
+>  // Timestamp                  Instant
+>     2007T                      2007-01-01T00:00.000-00:00
+>     2007-05T                   2007-05-01T00:00.000-00:00
+>     2007-05-23T                2007-05-23T00:00.000-00:00
+>     2007-05-23T:06:15Z         2007-05-01T06:15.000Z
+>     2007-05-23T:06:15-00:00    2007-05-01T06:15.000-00:00
+>     2007-05-23T:06:15+00:00    2007-05-01T06:15.000+00:00
+>     2007-05-23T:06:15+05:00    2007-05-01T06:15.000+05:00
+>     2007-05-23T:06:15.945Z     2007-05-01T06:15.945Z   
+> ```
+
+A `timestamp` range includes any `timestamp` that falls between the minimum and maximum in chronological order. 
+`timestamp` ranges do not include values of any other type.
+
 > ```
 > range::[5, max]                               // minimum 5, maximum unbound
 > range::[min, 7]                               // minimum unbound, maximum 7
 > range::[5, 7]                                 // between 5 and 7, inclusive
+> range::[1.0, 10e]                             // mixing numeric types is allowed
 > range::[exclusive::5, exclusive::7]           // between 5 and 7, exclusive; if type is also constrained to be an int, only 6 is allowed
 > range::[5.5, 7.9]                             // between 5.5 and 7.9, inclusive
 > range::[2019-01-01T, exclusive::2020-01-01T]  // any timestamp in the year 2019
@@ -338,7 +375,8 @@ expected, `5`, `null`, `null.null`, and `null.int` are valid, but
 ### valid_values
 
 <code><b>valid_values:</b> [ <i>&lt;VALUE&gt;...</i> ]</code><br/>
-<code><b>valid_values:</b> <i>&lt;RANGE&lt;NUMBER&gt;&gt;</i></code>
+<code><b>valid_values:</b> <i>&lt;RANGE&lt;NUMBER&gt;&gt;</i></code><br/>
+<code><b>valid_values:</b> <i>&lt;RANGE&lt;TIMESTAMP&gt;&gt;</i></code>
 
 A list of acceptable, non-annotated values;  any values not present
 in the list are invalid. Whether a particular value matches
