@@ -41,7 +41,6 @@ assumes that readers are familiar with the Ion data model defined in the
     * [container_length](#container_length)
     * [content](#content)
     * [element](#element)
-    * [occurs](#occurs)
   * [List/S-expression/Document Constraints](#lists-expressiondocument-constraints)
     * [contains](#contains)
     * [ordered_elements](#ordered_elements)
@@ -212,6 +211,57 @@ type::{
   },
 }
 ```
+
+An inlined type definition may also contain an `occurs` field that 
+indicates how many times a value of a specific type may occur. This 
+is applicable only within the context of `ordered_elements` and struct
+`fields` constraints.
+
+```
+// Field 'foo' is required
+type::{
+  fields: {
+    foo: {                // inline type with `occurs`
+      occurs: required,
+      type: string,
+      codepoint_length: range::[1, max],
+    },
+  }
+}
+
+type::{
+  type: sexp,
+  ordered_elements: [
+    {
+      valid_values: ['+', '*', '-', '/', '^'] 
+    },
+    {
+      occurs: 2,
+      type: number,
+    },
+  ]
+}
+```
+
+
+The `occurs` field indicates either the exact or minimum/maximum
+number of occurrences of the specified type or field. The special
+value `optional` is synonymous with `range::[0, 1]`; similarly, the
+special value `required` is synonymous with the *exact* value `1` 
+(or `range::[1, 1]`).
+
+> ```
+> occurs: 3
+> occurs: range::[1, max]
+> occurs: range::[min, 3]
+> occurs: range::[1, 5]
+> occurs: optional           // equivalent to range::[0, 1]
+> occurs: required           // equivalent to 1 or range::[1, 1]
+> ```
+
+The default value for `occurs` is specific to each constraint; refer
+to [`fields`](#fields) and [`ordered_elements`](#ordered_elements) for 
+more details.
 
 # Open Content
 
@@ -631,29 +681,6 @@ homogeneous list, S-expression, or struct.
 > element: { type: string, codepoint_length: 5 }
 > ```
 
-### occurs
-
-<code><b>occurs:</b> <i>&lt;INT&gt;</i></code><br/>
-<code><b>occurs:</b> <i>&lt;RANGE&lt;INT&gt;&gt;</i></code><br/>
-<code><b>occurs:</b> optional</code><br/>
-<code><b>occurs:</b> required</code>
-
-Applicable only within the context of `ordered_elements` and struct
-field constraints; indicates either the exact or minimum/maximum
-number of occurrences of the specified type or field. The special
-value `optional` is synonymous with `range::[0, 1]`; similarly,
-the special value `required` is synonymous with the *exact*
-value `1` (or `range::[1, 1]`).
-
-> ```
-> occurs: 3
-> occurs: range::[1, max]
-> occurs: range::[min, 3]
-> occurs: range::[1, 5]
-> occurs: optional           // equivalent to range::[0, 1]
-> occurs: required           // equivalent to 1 or range::[1, 1]
-> ```
-
 ## List/S-expression/Document Constraints
 
 ### contains
@@ -670,7 +697,7 @@ the specified values, in no particular order.
 
 ### ordered_elements
 
-<code><b>ordered_elements:</b> [ <i>&lt;TYPE_REFERENCE&gt;...</i> ]</code>
+<code><b>ordered_elements:</b> [ <i>&lt;VARIABLY_OCCURRING_TYPE&gt;...</i> ]</code>
 
 Defines constraints over a list of values in a heterogeneous list,
 S-expression, or document. Each value in a list, S-expression, or document
@@ -706,7 +733,7 @@ type is performed greedily before proceeding to the next type.
 Declares one or more field constraints of a struct, where <FIELD&gt;
 is defined as:
 
-<code><i>&lt;SYMBOL&gt;</i>: <i>&lt;TYPE_REFERENCE&gt;</i></code>
+<code><i>&lt;SYMBOL&gt;</i>: <i>&lt;VARIABLY_OCCURRING_TYPE&gt;</i></code>
 
 Field names defined for a particular struct type shall be unique.
 A field may narrow its declared type by specifying additional
@@ -902,6 +929,15 @@ This section provides a BNF-style grammar for the Ion Schema Language.
                    |           <IMPORT_TYPE>
                    | nullable::<IMPORT_TYPE>
 
+<OCCURS> ::= occurs: <INT>
+           | occurs: <RANGE<INT>>
+           | occurs: optional
+           | occurs: required
+
+<VARIABLY_OCCURRING_TYPE_REFERENCE> ::= type::{ <OCCURS>, <CONSTRAINT>... }
+                                      | { <OCCURS>, <CONSTRAINT>... }
+                                      | <TYPE_REFERENCE>
+
 <NUMBER> ::= <DECIMAL>
            | <FLOAT>
            | <INT>
@@ -931,7 +967,6 @@ This section provides a BNF-style grammar for the Ion Schema Language.
                | <ELEMENT>
                | <FIELDS>
                | <NOT>
-               | <OCCURS>
                | <ONE_OF>
                | <ORDERED_ELEMENTS>
                | <PRECISION>
@@ -971,20 +1006,15 @@ This section provides a BNF-style grammar for the Ion Schema Language.
 
 <ELEMENT> ::= element: <TYPE_REFERENCE>
 
-<FIELD> ::= <SYMBOL>: <TYPE_REFERENCE>
+<FIELD> ::= <SYMBOL>: <VARIABLY_OCCURRING_TYPE_REFERENCE>
 
 <FIELDS> ::= fields: { <FIELD>... }
 
 <NOT> ::= not: <TYPE_REFERENCE>
 
-<OCCURS> ::= occurs: <INT>
-           | occurs: <RANGE<INT>>
-           | occurs: optional
-           | occurs: required
-
 <ONE_OF> ::= one_of: [ <TYPE_REFERENCE>... ]
 
-<ORDERED_ELEMENTS> ::= ordered_elements: [ <TYPE_REFERENCE>... ]
+<ORDERED_ELEMENTS> ::= ordered_elements: [ <VARIABLY_OCCURRING_TYPE_REFERENCE>... ]
 
 <PRECISION> ::= precision: <INT>
               | precision: <RANGE<INT>>
