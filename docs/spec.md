@@ -1049,6 +1049,9 @@ This section provides a BNF-style grammar for the Ion Schema Language.
 
 ```
 
+All Ion Schema Language keywords SHALL use [Snake Case](https://en.wikipedia.org/wiki/Snake_case),
+and SHALL begin with `$` or an alphabetic character.
+
 # Examples
 
 The following examples illustrate how Ion Schema concepts work together,
