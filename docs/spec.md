@@ -157,7 +157,8 @@ The core types and Ion types are implicitly imported before any specified
 imports; specified imports are performed in order, and an import that
 cannot be resolved must result in an error. If two types with the same
 name are imported, or if a type defined within a schema has the same
-name as an imported type, this must result in an error.
+name as an imported type, this must result in an error. Only named, 
+top-level types of a schema may be imported in another schema.
 
 # Schema Authorities
 
