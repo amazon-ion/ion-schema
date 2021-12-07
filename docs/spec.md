@@ -335,6 +335,10 @@ A `number` range includes all values of any numeric type (i.e. `float`, `int`, a
 When testing a value for inclusion, the range bounds and the value that is being tested will all be converted to
 `decimal` values for the sake of comparison. `number` ranges do not include values of any other type.
 
+The `float` type includes [special non-number values](https://amzn.github.io/ion-docs/docs/float.html#special-values) (`nan`, `+inf`, and `-inf`).
+The bounds of a range may not be any of these values, and attempting to use a non-number value as the bound of a number range will result in an error. 
+When tested for inclusion in a number range, the non-number float values are always outside of a number range, even when one of the range bounds is `min` or `max`.
+
 ##### RANGE&lt;TIMESTAMP&gt;
 
 All [`timestamp` values](https://amzn.github.io/ion-docs/docs/spec.html#timestamp) represent an instant in time. 
@@ -432,9 +436,14 @@ expected, `5`, `null`, `null.null`, and `null.int` are valid, but
 A list of acceptable, non-annotated values;  any values not present
 in the list are invalid. Whether a particular value matches
 a specified valid_value is governed by the equivalence rules
-defined by the Ion data model (e.g., `1.230` is not valid for
-`valid_values: [1.23]`, as it has a different precision). For numeric
-and timestamp types, valid_values may optionally be defined as a
+defined by the Ion data model.
+
+For example, `1.230` is not valid for `valid_values: [1.23]`, as it has a different precision.
+While these may be mathematically equal values, they are not _equivalent data_.
+In particular, note that `nan` is valid for `valid_values: [nan]`.
+In the Ion data model all valid Ion encodings of `nan` are _equivalent data_.
+
+For numeric and timestamp types, valid_values may optionally be defined as a
 range. When a timestamp range is specified, neither end of the range
 may have an unknown local offset.
 
@@ -451,6 +460,7 @@ may have an unknown local offset.
 > valid_values: range::[-0.12e4, 0.123]
 > valid_values: range::[2000-01-01T00:00:00Z, max]
 > valid_values: [1, 2, 3, null, null.int]
+> valid_values: [range::[exclusive::0, max], +inf]
 > ```
 
 ## Blob/Clob Constraints
