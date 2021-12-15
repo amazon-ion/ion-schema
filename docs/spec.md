@@ -336,7 +336,7 @@ When testing a value for inclusion, the range bounds and the value that is being
 `decimal` values for the sake of comparison. `number` ranges do not include values of any other type.
 
 The `float` type includes [special non-number values](https://amzn.github.io/ion-docs/docs/float.html#special-values) (`nan`, `+inf`, and `-inf`).
-The bounds of a range may not be any of these values, and attempting to use a non-number value as the bound of a number range will result in an error. 
+Attempting to use a non-number value as the bound of a number range will result in an error. 
 When tested for inclusion in a number range, the non-number float values are always outside of a number range, even when one of the range bounds is `min` or `max`.
 
 ##### RANGE&lt;TIMESTAMP&gt;
