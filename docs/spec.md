@@ -88,7 +88,7 @@ The type system defines the following core types:
       - `lob`: represents a `blob` or `clob`
       - `number`: represents a `decimal`, `float`, or `int`
       - `text`: represents a `string` or `symbol`
-      - `document`: represents a series of top-level values
+      - `document`: similar to an Ion [value stream](https://amzn.github.io/ion-docs/docs/glossary.html#value_stream), this represents a series of top-level values, but unlike a value stream, a `document` cannot be unbounded.
       - `nothing`: has no valid value (useful for reserving a field name)
       - `any`: represents any of the types listed above as well as types
         derived from those types
