@@ -719,10 +719,6 @@ of the specified types list. Each type is implicitly defined with
 When specified, this constraint fully defines the content of a list,
 S-expression, or document -- open content is not implicitly allowed.
 
-Note that when a type in a heterogeneous list, S-expression, or document
-may occur some variable number of times, matching against a particular
-type is performed greedily before proceeding to the next type.
-
 > ```
 > ordered_elements: [
 >   string,
