@@ -5,17 +5,6 @@
   - [Summary](#summary)
   - [Motivation](#motivation)
   - [Description of Changes](#description-of-changes)
-    - [Versioning Rules for the Ion Schema Language](#versioning-rules-for-the-ion-schema-language)
-    - [Open content in Ion Schema 2.0](#open-content-in-ion-schema-20)
-    - [Add `ieee754_float` constraint](#add-ieee754_float-constraint)
-    - [Replace `scale` constraint with `exponent` constraint](#replace-scale-constraint-with-exponent-constraint)
-    - [Replace `nullable::` with `$null_or::`](#replace-nullable-with-null_or)
-    - [Add support for modeling a set](#add-support-for-modeling-a-set)
-    - [Add `field_names` constraint](#add-field_names-constraint)
-    - [Replace `content: closed` with `closed::` modifier for `fields` constraint.](#replace-content-closed-with-closed-modifier-for-fields-constraint)
-    - [Improve `annotations` constraint](#improve-annotations-constraint)
-    - [Add additional regex support](#add-additional-regex-support)
-    - [Change implicit `type: any` to `type: $any`](#change-implicit-type-any-to-type-any)
   - [Compatibility with Ion Schema 1.0](#compatibility-with-ion-schema-10)
   - [Appendix — Below the Line/Out of Scope for Ion Schema 2.0](#appendix--below-the-lineout-of-scope-for-ion-schema-20)
     - [Schema/Type versioning](#schematype-versioning)
@@ -59,48 +48,27 @@ As Ion Schema has been used by customers, customers have asked for some new func
 
 ## Description of Changes
 
-### Versioning Rules for the Ion Schema Language
-
+* **Versioning Rules for the Ion Schema Language**  
 Ion Schema will use a major and minor version numbers. (This was implied in Ion Schema 1.0, but not well-defined.) Any backwards-incompatible change requires a new major version. Any other change to the Ion Schema Language requires a new minor version. Edits to the specification for spelling, grammar, or clarity (i.e. any changes that do not affect the ISL syntax or semantics) do not require a new version of Ion Schema. See [Ion Schema Language Versions](language_versions.md) for full details.
-
-### Open Content in Ion Schema 2.0
-
+* **Open Content in Ion Schema 2.0**   
 Ion Schema 2.0 defines a set of symbols that are reserved for use by future versions of Ion Schema. A user may use a reserved symbol for open content if and only if that field is explicitly declared as user content in the schema header. See [Ion Schema 2.0 Open Content](open_content.md).
-
-### Add `ieee754_float` constraint
-
-If a user wants to model [binary32](https://en.wikipedia.org/wiki/Single-precision_floating-point_format) or [binary16](https://en.wikipedia.org/wiki/Half-precision_floating-point_format) ranges in Ion Schema 1.0, it cannot be done due to precision/scale aspects of binary floating-point. The `ieee7754_float` constraint allows us to constraint float values to be only those values that are precisely representable by a specific IEEE 754 binary encoding. See [ion-schema #18](https://github.com/amzn/ion-schema/issues/18#issuecomment-1092130146).
-
-### Replace `scale` constraint with `exponent` constraint
-
-The `scale` constraint has some unexpected behavior and is at odds with the Ion Decimal data model. Ion Schema 2.0 replaces `scale` with `exponent`, which closely aligns with the Ion `decimal` data model. See [ion-schema #27](https://github.com/amzn/ion-schema/issues/27).
-
-### Replace `nullable::` with `$null_or::`
-
-The `nullable::` annotation is underspecified and behaves in unintuitive ways. A complete solution to correctly identify the allowed types of null is not practical to solve, so `nullable::` will be replaced with `$null_or::` which will be syntactical sugar for a union of `null` (equivalently `null.null`) and the annotated type. See [ion-schema #38](https://github.com/amzn/ion-schema/issues/38#issuecomment-1119833602).
-
-### Add support for modeling a set
-
-Ion Schema 1.0 provides no way to model a set. Ion Schema 2.0 introduces the modifier `distinct::` for the `element` constraint which validates that no two elements in a container may be equivalent Ion values. See [ion-schema #43](https://github.com/amzn/ion-schema/issues/43).
-
-### Add `field_names` constraint
-
-Ion Schema 1.0 provides no way to validate field names except by listing out explicitly which names are allowed in the `fields` constraint. The `field_names` constraint will allow the text of all field name symbols of a struct to be validated according to a specified type. See [ion-schema #44](https://github.com/amzn/ion-schema/issues/44#issuecomment-1097296761).
-
-### Replace `content: closed` with `closed::` modifier for `fields` constraint.
-
+* **Add `ieee754_float` constraint**  
+If a user wants to model [binary32](https://en.wikipedia.org/wiki/Single-precision_floating-point_format) or [binary16](https://en.wikipedia.org/wiki/Half-precision_floating-point_format) ranges in Ion Schema 1.0, it cannot be done due to precision/scale aspects of binary floating-point. The `ieee754_float` constraint allows us to constraint float values to be only those values that are precisely representable by a specific IEEE 754 binary encoding. See [ion-schema #18](https://github.com/amzn/ion-schema/issues/18#issuecomment-1092130146). 
+* **Replace `scale` constraint with `exponent` constraint**  
+The `scale` constraint has some unexpected behavior and is at odds with the Ion Decimal data model. Ion Schema 2.0 replaces `scale` with `exponent`, which closely aligns with the Ion `decimal` data model. See [ion-schema #27](https://github.com/amzn/ion-schema/issues/27). 
+* **Replace `nullable::` with `$null_or::`**  
+The `nullable::` annotation is underspecified and behaves in unintuitive ways. A complete solution to correctly identify the allowed types of null is not practical to solve, so `nullable::` will be replaced with `$null_or::` which will be syntactical sugar for a union of `null` (equivalently `null.null`) and the annotated type. See [ion-schema #38](https://github.com/amzn/ion-schema/issues/38#issuecomment-1119833602). 
+* **Add support for modeling a set**  
+Ion Schema 1.0 provides no way to model a set. Ion Schema 2.0 introduces the modifier `distinct::` for the `element` constraint which validates that no two elements in a container may be equivalent Ion values. See [ion-schema #43](https://github.com/amzn/ion-schema/issues/43). 
+* **Add `field_names` constraint**  
+Ion Schema 1.0 provides no way to validate field names except by listing out explicitly which names are allowed in the `fields` constraint. The `field_names` constraint will allow the text of all field name symbols of a struct to be validated according to a specified type. See [ion-schema #44](https://github.com/amzn/ion-schema/issues/44#issuecomment-1097296761). 
+* **Replace `content: closed` with `closed::` modifier for `fields` constraint.**  
 The `content: closed` (pseudo) constraint only *modifies* the `fields` constraint and is confusing when composing types. It will be removed in Ion Schema 2.0 and replaced with a `closed::` modifier for the `fields` constraint. See [ion-schema #47](https://github.com/amzn/ion-schema/issues/47).
-
-### Improve `annotations` constraint
-
-In Ion Schema 1.0, the `annotations` constraint has some unexpected and useless behaviors, and it is not possible to model rules such as "1 of N annotations" or "any lowercase annotation". Ion Schema 2.0 eliminates the specific configurations that have confusing behavior, and adds syntax to allow annotations to be validated as if they are a `list` of `symbol`. See [ion-schema #51](https://github.com/amzn/ion-schema/issues/51#issuecomment-1105688979).
-
-### Add additional regex support
-
+* **Improve `annotations` constraint**  
+In Ion Schema 1.0, the `annotations` constraint has some unexpected and useless behaviors, and it is not possible to model rules such as "1 of N annotations" or "any lowercase annotation". Ion Schema 2.0 eliminates the specific configurations that have confusing behavior, and adds syntax to allow annotations to be validated as if they are a `list` of `symbol`. See [ion-schema #51](https://github.com/amzn/ion-schema/issues/51#issuecomment-1105688979). 
+* **Add additional regex support**  
 Ion Schema 2.0 adds support for backslash-escaped character sets inside character classes to the subset of supported ECMA regex features. See [ion-schema #54](https://github.com/amzn/ion-schema/issues/54).
-
-### Change implicit `type: any` to `type: $any`
-
+* **Change implicit `type: any` to `type: $any`**  
 In Ion Schema 1.0, the default `type` is `any` rather than the top type, `$any`. This leads to some unintuitive behavior when handling null values. Ion Schema 2.0 changes the default `type` of a type definition from `any` to `$any`. See [ion-schema #58](https://github.com/amzn/ion-schema/issues/58).
 
 ## Compatibility with Ion Schema 1.0
