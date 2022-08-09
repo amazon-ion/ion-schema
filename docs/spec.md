@@ -399,6 +399,10 @@ whether a type is constrained by `content: closed`. Additional
 annotations can only be constrained by adding the `closed`
 annotation to the list of valid annotations.
 
+Annotations are only applicable to Ion _values_. A `document` is not
+an Ion value, but rather a stream of values, so a `document` is always
+invalid for the `annotations` constraint.
+
 > ```
 > annotations: [red, required::green, blue]
 > annotations: required::[red, optional::green, blue]
@@ -446,6 +450,10 @@ In the Ion data model all valid Ion encodings of `nan` are _equivalent data_.
 For numeric and timestamp types, valid_values may optionally be defined as a
 range. When a timestamp range is specified, neither end of the range
 may have an unknown local offset.
+
+Note that `valid_values` only matches a single Ion value. A `document` is 
+not an Ion value, but rather a stream of values, so a `document` is always
+invalid for the `valid_values` constraint.
 
 > ```
 > valid_values: [2, 3, 5, 7, 11, 13, 17, 19]
