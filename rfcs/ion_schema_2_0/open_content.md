@@ -457,7 +457,7 @@ This has been deemed out of scope for Ion Schema 2.0, but in a future version, i
 $ion_schema_2_0
 schema_header::{
   imports: [
-    user_content::{ id: foo }, // Imports the extensions defined in foo
+    user_content::{ id: foo }, // Imports the user content words defined in foo
     { id: foo, type: bar}
   ]
 }
