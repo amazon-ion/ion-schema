@@ -32,6 +32,7 @@ Ion Schema 2.0 introduces the following changes:
 * [ion-schema #51](https://github.com/amzn/ion-schema/issues/51#issuecomment-1105688979) – Improve modeling of annotations in Ion Schema
 * [ion-schema #54](https://github.com/amzn/ion-schema/issues/54) – Add support for more ECMA 262 regex features
 * [ion-schema #58](https://github.com/amzn/ion-schema/issues/58) – Change the default type from `any` to `$any`
+* [ion-schema #72](https://github.com/amzn/ion-schema/issues/72) – Allow timestamp ranges to have endpoints with unknown offsets
 
 ## Motivation
 
@@ -70,6 +71,8 @@ In Ion Schema 1.0, the `annotations` constraint has some unexpected and useless 
 Ion Schema 2.0 adds support for backslash-escaped character sets inside character classes to the subset of supported ECMA regex features. See [ion-schema #54](https://github.com/amzn/ion-schema/issues/54).
 * **Change implicit `type: any` to `type: $any`**  
 In Ion Schema 1.0, the default `type` is `any` rather than the top type, `$any`. This leads to some unintuitive behavior when handling null values. Ion Schema 2.0 changes the default `type` of a type definition from `any` to `$any`. See [ion-schema #58](https://github.com/amzn/ion-schema/issues/58).
+* **Allow timestamp ranges to have endpoints with unknown offsets**  
+Ion Schema 1.0 prohibits using timestamps with unknown offsets as the upper or lower bound of a timestamp range, which leads to an awkward user experience in some cases. Ion Schema 2.0 allows timestamp ranges to have boundaries with unknown offset. See [ion-schema #72](https://github.com/amzn/ion-schema/issues/72).
 
 ## Compatibility with Ion Schema 1.0
 
