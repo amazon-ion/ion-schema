@@ -1,7 +1,7 @@
-# Ion Schema Language Versions
+# RFC: Ion Schema Language Versions
 
 <!-- TOC start -->
-- [Ion Schema Language Versions](#ion-schema-language-versions)
+- [Ion Schema Language Versions](#rfc-ion-schema-language-versions)
   - [Introduction](#introduction)
   - [Definitions/Glossary](#definitionsglossary)
   - [Ion Schema Compatibility/Portability Goal](#ion-schema-compatibilityportability-goal)

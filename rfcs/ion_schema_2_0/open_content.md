@@ -1,7 +1,7 @@
-# Ion Schema 2.0 Open Content
+# RFC: Ion Schema 2.0 Open Content
 
 <!-- TOC start -->
-- [Ion Schema 2.0 Open Content](#ion-schema-20-open-content)
+- [Ion Schema 2.0 Open Content](#rfc-ion-schema-20-open-content)
   - [Introduction](#introduction)
   - [Definitions/Glossary](#definitionsglossary)
   - [Motivation](#motivation)

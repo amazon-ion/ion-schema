@@ -5,10 +5,19 @@ permalink: /docs/
 
 # {{ page.title }}
 
-[Ion Schema Specification](spec.html)
+### Specifications
 
-This document defines the Ion Schema Language and constraints.
+* [Ion Schema Language Versioning](spec/isl-versioning)
+* [Ion Schema 1.0 Specification](spec/isl-1-0-spec)
+* Ion Schema 2.0 Specification (Coming soon!)
 
-[Ion Schema Language Cookbook](cookbook.html)
+### Cookbooks
 
-The cookbook contains samples for some Ion Schema use cases.
+* [Modeling Logical Relationships](cookbook/logical-relationships)
+* [Modeling SQL Decimals](cookbook/sql-decimals)
+* [Optionally ignoring the occurs requirement for fields](cookbook/ignore-occurs-requirements)
+* [Using Ion Schema Schemas](cookbook/ion-schema-schemas)
+
+### Other Information
+
+* [Considerations for Implementing Ion Schema](implementing)

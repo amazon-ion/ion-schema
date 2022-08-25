@@ -1,5 +1,7 @@
 ---
 title:  Ion Schema Specification 1.0
+redirect_from:
+ - /docs/spec
 ---
 # {{ page.title }}
 
@@ -830,28 +832,6 @@ corresponds to a type is to validate the value against that type. By
 convention, a value may be annotated as follows:
 
 <code><i>&lt;ID&gt;</i>::<i>&lt;TYPE_NAME&gt;</i>::<i>&lt;VALUE&gt;</i></code>
-
-# Implementation Considerations
-
-  - When a value is not valid for a particular type, it is generally
-    helpful to surface all the reasons the value isn't valid, rather
-    than just the first reason.
-
-  - For types that allow open content, it can be helpful to provide a
-    'strict' validation mode that allows trivial errors (e.g., typing
-    mistakes) to be identified easily.
-
-  - Runtime resolution of a schema over a network presents availability
-    and security risks, and should therefore be avoided.
-
-  - Consider when warnings should be issued instead of errors (e.g.,
-    if a schema authority is configured to reference a URL, or a type is
-    defined such that there are no valid values for it).
-
-  - As ISL itself allows for open content, consider providing an API
-    to make that content available to callers.
-
-  - Consider allowing callers to define additional constraints.
 
 # Rationale
 
