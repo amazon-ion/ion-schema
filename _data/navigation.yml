@@ -1,6 +1,8 @@
 main:
   - title: "Home"
     url: /
+  - title: "Sandbox"
+    url: /sandbox.html
   - title: "News"
     url: /news.html
   - title: "Docs"
