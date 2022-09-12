@@ -1,9 +1,11 @@
 main:
   - title: "Home"
     url: /
+  - title: "Sandbox"
+    url: /sandbox
   - title: "News"
-    url: /news.html
+    url: /news
   - title: "Docs"
     url: /docs
   - title: "Libs"
-    url: /libs.html
+    url: /libs
