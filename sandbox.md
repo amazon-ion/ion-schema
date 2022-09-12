@@ -9,14 +9,12 @@ title: Give Ion Schema a Try!
       <label for="schema">Ion schema:</label>
       <div id="schema"></div>
       <br>
-      <label for="schema_type">Schema type to be used for validation:</label>
-      <input type="text" id="schema_type" placeholder="e.g. my_type" name="schema_type" rows="5" cols="33"/>
-      <br>
-      <br>
       <label for="value">Ion input data to be validated:</label>
       <div id="value"></div>
       <br>
-      <button id="validate" type="submit">validate</button>
+      <label for="schema_type">Validate as </label>
+      <input type="text" id="schema_type" placeholder="e.g. my_type" name="schema_type" size="15"/>
+      <button id="validate" type="submit">Go</button>
       <br>
       <br>
       <h3><pre id="result"></pre></h3>

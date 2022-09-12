@@ -30,13 +30,19 @@ $on-laptop:        800px;
 
 
 // ion schema sandbox styling
+#sandbox {
+  height: 100%;
+  width: 100%;
+}
 #schema {
-  width: 500px;
+  background-color: $background-color;
+  width: 70%;
   height: 200px;
   position: relative;
 }
 #value {
-  width: 500px;
+  background-color: $background-color;
+  width: 70%;
   height: 100px;
   position: relative;
 }
@@ -44,7 +50,6 @@ button {
   background-color: #fff;
   border: 1px solid #d5d9d9;
   border-radius: 8px;
-  box-shadow: rgba(213, 217, 217, .5) 0 2px 5px 0;
   box-sizing: border-box;
   color: #0f1111;
   cursor: pointer;
@@ -68,23 +73,17 @@ button:hover {
 
 button:focus {
   border-color: #008296;
-  box-shadow: rgba(213, 217, 217, .5) 0 2px 5px 0;
   outline: 0;
 }
 #violation {
   border-left: 0px;
-  background: white;
+  background-color: $background-color;
   color: red;
   text-align: left;
 }
 #result {
   border-left: 0px;
-  background: white;
-}
-#sandbox > label {
-  display: block;
-  margin-bottom: 10px;
-  font-size: medium;
+  background-color: $background-color;
 }
 
 // whiteglass also includes a mixin for defining media queries.
