@@ -4,23 +4,32 @@ title:  Getting started with `ion-schema-rust`
 # {{ page.title }}
 _(Applies to Ion Schema 1.0.)_
 
-This is a getting started cookbook for `ion-schema-rust`. It includes all the examples for using `ion-schema-rust` like loading a schema, using Ion schema ot validate Ion values etc.
+This is a getting started cookbook for `ion-schema-rust`. It includes all the examples for using `ion-schema-rust` like loading a schema, using Ion schema to validate Ion values, etc.
 
+* [How to use this cookbook?](#how-to-use-this-cookbook)
 * [Terms](#terms)
 * [How to create a `SchemaSystem`?](#how-to-create-a-schemasystem)
     * [Creating `DocumentAuthority`](#creating-documentauthority)
     * [How to create `FileSystemDocumentAuthority`](#how-to-create-filesystemdocumentauthority)
     * [How to create `MapDocumentAuthority`](#how-to-create-mapdocumentauthority)
-* [`DocumentAuthority` operations on schema](#docuementauthority-operations-on-a-schemasystem)
+* [`DocumentAuthority` operations on schema](#documentauthority-operations-on-a-schemasystem)
     * [How to get all the authorities that are there for a given `SchemaSystem`?](#how-to-get-all-the-authorities-that-are-there-for-a-given-schemasystem)
     * [How to add new authority into a `SchemaSystem`?](#how-to-add-new-authority-into-a-schemasystem)
-    * [How to create a `SchemsSystem` with given authority or list of authorities?](#how-to-create-a-schemssystem-with-given-authority-or-list-of-authorities)
-* [How to load a `Schema`?](#how-to-load-a-schemahttpsdocsrsion-schema040ion_schemaschemastructschemahtml)
+    * [How to create a `SchemsSystem` with given authority or list of authorities?](#how-to-create-a-schemasystem-with-given-authority-or-list-of-authorities)
+* [How to load a `Schema`?](#how-to-load-a-schema)
     * [Loading a schema](#loading-a-schema)
-* [How to create a schema programmatically(`IslSchema`)?](#how-to-create-a-schema-programmaticallyislschemahttpsdocsrsion-schema040ion_schemaislstructislschemahtml)
-    * [How to create an `IslType`?](#how-to-definecreate-an-isltypehttpsdocsrsion-schema040ion_schemaislisl_typeenumisltypehtml)
+* [How to create a schema programmatically(`IslSchema`)?](#how-to-create-a-schema-programmaticallyislschema)
+    * [How to create an `IslType`?](#how-to-definecreate-an-isltype)
     * [How to create `IslSchema`?](#how-to-create-islschema)
 * [How to validate an Ion value using a `Schema`?](#how-to-validate-an-ion-value-using-a-schema)
+
+## How to use this cookbook?
+This cookbook explains how to create all the necessary structures required to perform Ion schema validation. It gives sample code with each section explaining the usage of that operation or structure.
+In general, the process of Ion schema validation contains two steps. 
+1. The first step is to load a correct Ion schema. In this step, we use a `SchemaSystem` which verifies the syntax of given schema file for its correctness.
+2. The second step is to use this generated schema from #1 and validate Ion values using the type definitions defined within the schema.
+
+This cookbook starts from examples for #1(including examples for all the required structures to be created to complete #1) and at the end adds examples for #2(How to validate Ion value using `ion-schema-rust`)
 
 ## Terms
 
@@ -32,41 +41,24 @@ This is a getting started cookbook for `ion-schema-rust`. It includes all the ex
 
 ## How to create a `SchemaSystem`?
 
-`ion-schema-rust` requires you to create an [`SchemaSystem`](https://docs.rs/ion-schema/0.4.0/ion_schema/system/struct.SchemaSystem.html) in order to load a schema from given file location. 
+`ion-schema-rust` requires you to create an `SchemaSystem` in order to load a schema from given file location. 
 Hence, Creating a `SchemaSystem` is the first step to loading a schema file for validation. 
 
 ### Creating `DocumentAuthority`:
 
-In general, users will create a [`DocumentAuhtority`](https://docs.rs/ion-schema/0.4.0/ion_schema/authority/trait.DocumentAuthority.html) and then use it to build the [SchemaSystem](https://docs.rs/ion-schema/0.4.0/ion_schema/system/struct.SchemaSystem.html). Then this [SchemaSystem](https://docs.rs/ion-schema/0.4.0/ion_schema/system/struct.SchemaSystem.html) is used instantiating instances of [Schema](https://docs.rs/ion-schema/0.4.0/ion_schema/schema/struct.Schema.html).
+In general, users will create a `DocumentAuthority` and then use it to build the `SchemaSystem`. Then this `SchemaSystem` is used instantiating instances of `Schema`.
 There are two types of `DocumentAuthority` available:
 
-* [`FileSystemDocumentAuthority`](https://docs.rs/ion-schema/0.4.0/ion_schema/authority/struct.FileSystemDocumentAuthority.html) 
+* `FileSystemDocumentAuthority` 
     * This authority allows to specify the base path to where all the schema files are saved (e.g. `/home/USER/schemas/`)
     * Adding this authority your `SchemaSystem` would allow to resolve all schema ids (relative path to schema file, e.g. `my_schema.isl`) that are within this authority’s base path(e.g. `/home/USER/schemas/`)
     * In order to load a schema id(e.g. `my_schema.isl`) with this `FileSystemDocumentAuthority` that is added to your `SchemaSystem` would be as simple as: `schema_system.load_schema("my_schema.isl")`
-* [`MapDocumentAuthority`](https://docs.rs/ion-schema/0.4.0/ion_schema/authority/struct.MapDocumentAuthority.html)
+* `MapDocumentAuthority`
     * This authority allows to specify a `HashMap` of schema ids as a key and the schema as value. 
     * Adding this authority your `SchemaSystem` would allow to resolve all schema ids that are within this authority’s map keys.
     * In order to load a schema id(e.g. `my_schema`) with this `FileSystemDocumentAuthority` that is added to your `SchemaSystem` would be as simple as: `schema_system.load_schema("my_schema")`
 
 _Note: A single `SchemaSystem` can contain multiple `DocumentAuthority`s_
-
-```rust
-  // An example of `MapDocumentAuhtority` with `(schema_id, schema content)` pair
-   (
-        "my_schema", <--- schema id
-        r#"                     _
-            schema_header::{     |
-            }                    |
-            type::{              |  
-                name: my_int,    |--> Ion schema as raw string
-                type: int,       |
-            }                    |
-            schema_footer::{     |
-            }                    |
-        "#,                     -
-  ),
-```
 
 ### How to create `FileSystemDocumentAuthority`?
 Creating a `FileSystemAuthority` requires to pass a base path where all the schema files resides.
@@ -85,7 +77,10 @@ Creating a `MapDocumentAuthority` requires to pass a `HashMap` with key-value pa
 // map with (schema id, schema content) to represent `sample_number` schema
 let map_authority = [
     (
-        "sample_number.isl",
+        "sample_number.isl", // <--- schema id
+        // Ion schema as raw String
+        //          |
+        //          v
         r#"
             schema_header::{
                 imports: [{ id: "sample_decimal.isl", type: my_decimal, as: other_decimal }],
@@ -131,18 +126,17 @@ Finally, next code block shows how to create a `SchemSystem` using `FileSystemDo
 ```rust
 // Create authorities vector containing all the authorities that will be used to load a schema based on schema id
 let document_authorities: Vec<Box<dyn DocumentAuthority>> = vec![Box::new(
-    FileSystemDocumentAuthority::new(Path::new("sample_schemas")), <--- provide a path to the authority base folder containing schemas
+    FileSystemDocumentAuthority::new(Path::new("sample_schemas")), // <--- provide a path to the authority base folder containing schemas
 )];
 
 // Create a new schema system using given document authorities
 let mut schema_system = SchemaSystem::new(document_authorities);
 ```
 
-## `DocuementAuthority` operations on a `SchemaSystem`
+## `DocumentAuthority` operations on a `SchemaSystem`
 
 ### How to get all the authorities that are there for a given `SchemaSystem`?
-
-In order to get all the authorities in a `SchemaSystem`:
+If you want to check which authorities do your `SchemaSystem` contain you can perform following operation:
 
 ```rust
 // assuming the SchemSystem in built into variable: `schema_system`
@@ -157,14 +151,17 @@ vec![Box::new(
 ```
 
 ### How to add new authority into a `SchemaSystem`?
+As your `SchemaSystem` starts growing, it might be possible that you would want to add a new authority to the `SchemaSystem`. 
+For example, you now have a new place where all your schemas are saved. This means you have new `FileSystemAuthority` to add to your `SchemaSystem`.
+Adding a new authority to the `SchemaSystem` expands the search area for loading a schema from `SchemaSystem`. 
 
 ```rust
-// assuming the SchemSystem in built into variable: `schema_system`
+// assuming the SchemSystem is built into variable: `schema_system`
 // following operation adds new authority with base path `tests` into `schema_system`
 schema_system.add_authority(Box::new(FileSystemDocumentAuthority::new(Path::new("test"))));
 ```
 
-### How to create a `SchemsSystem` with given authority or list of authorities?
+### How to create a `SchemaSystem` with given authority or list of authorities?
 
 ```rust
 // assuming the SchemSystem in built into variable: `schema_system`
@@ -182,7 +179,7 @@ let new_schema_system =  schema_system.with_authorities(vec![
 ]);
 ```
 
-## How to load a [`Schema`](https://docs.rs/ion-schema/0.4.0/ion_schema/schema/struct.Schema.html)?
+## How to load a `Schema`?
 
 ### Example schema `my_schema.isl`
 
@@ -231,11 +228,11 @@ fn main() -> IonSchemaResult<()> {
 }
 ```
 
-## How to create a schema programmatically([`IslSchema`](https://docs.rs/ion-schema/0.4.0/ion_schema/isl/struct.IslSchema.html))?
+## How to create a schema programmatically(`IslSchema`)?
 
 Programmatic construction of Ion schema refers to an internal model representation of Ion schema and it mostly resembles to the [grammar](https://amzn.github.io/ion-schema/docs/spec.html#grammar) specified in Ion schema spec.
 
-### How to define/create an [IslType](https://docs.rs/ion-schema/0.4.0/ion_schema/isl/isl_type/enum.IslType.html)?
+### How to define/create an `IslType`?
 For an Ion schema type definition like:
 ```
 type:: {
@@ -281,23 +278,7 @@ let isl_schema = IslSchema::new(vec![], vec![isl_type], vec![]);
 
 ## How to validate an Ion value using a `Schema`?
 
-### Example schema `my_schema.isl`
-
-This file (`my_schema.isl`) defines a new type (`my_int_type`) based on Ion's int type.
-
-```
-schema_header::{
-  imports: [],
-}
-
-type::{
-  name: my_int_type,
-  type: int,
-}
-
-schema_footer::{
-}
-```
+_Note: The schema file used in this section is previously defined in `How to load a schema?` section_
 
 ### How to validate an Ion value using `Schema`?
 
