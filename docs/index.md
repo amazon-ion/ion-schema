@@ -1,15 +1,18 @@
 ---
 title: Docs
 permalink: /docs/
+redirect_from:
+- /docs/spec
+- /docs/cookbook
 ---
 
 # {{ page.title }}
 
 ### Specifications
 
-* [Ion Schema Language Versioning](spec/isl-versioning)
-* [Ion Schema 1.0 Specification](spec/isl-1-0-spec)
-* Ion Schema 2.0 Specification (Coming soon!)
+* [Ion Schema Language Versioning](isl-versioning)
+* [Ion Schema 1.0 Specification](isl-1-0/spec)
+* [Ion Schema 2.0 Specification](isl-2-0/spec)
 
 ### Cookbooks
 

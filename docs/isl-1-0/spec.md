@@ -1,7 +1,7 @@
 ---
 title:  Ion Schema Specification 1.0
 redirect_from:
- - /docs/spec
+ - /docs/isl-1-0
 ---
 # {{ page.title }}
 
