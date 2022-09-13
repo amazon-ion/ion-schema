@@ -29,7 +29,7 @@ In general, the process of Ion schema validation contains two steps.
 1. The first step is to load a correct Ion schema. In this step, we use a `SchemaSystem` which verifies the syntax of given schema file for its correctness.
 2. The second step is to use this generated schema from #1 and validate Ion values using the type definitions defined within the schema.
 
-This cookbook starts from examples for #1(including examples for all the required structures to be created to complete #1) and at the end adds examples for #2(How to validate Ion value using `ion-schema-rust`)
+This cookbook starts from examples for #1 (including examples for all the required structures to be created to complete #1) and at the end adds examples for #2 (How to validate Ion value using `ion-schema-rust`)
 
 ## Terms
 
@@ -51,12 +51,12 @@ There are two types of `DocumentAuthority` available:
 
 * `FileSystemDocumentAuthority` 
     * This authority allows to specify the base path to where all the schema files are saved (e.g. `/home/USER/schemas/`)
-    * Adding this authority your `SchemaSystem` would allow to resolve all schema ids (relative path to schema file, e.g. `my_schema.isl`) that are within this authority’s base path(e.g. `/home/USER/schemas/`)
-    * In order to load a schema id(e.g. `my_schema.isl`) with this `FileSystemDocumentAuthority` that is added to your `SchemaSystem` would be as simple as: `schema_system.load_schema("my_schema.isl")`
+    * Adding this authority your `SchemaSystem` would allow to resolve all schema ids (relative path to schema file, e.g. `my_schema.isl`) that are within this authority’s base path (e.g. `/home/USER/schemas/`)
+    * In order to load a schema id (e.g. `my_schema.isl`) with this `FileSystemDocumentAuthority` that is added to your `SchemaSystem` would be as simple as: `schema_system.load_schema("my_schema.isl")`
 * `MapDocumentAuthority`
     * This authority allows to specify a `HashMap` of schema ids as a key and the schema as value. 
     * Adding this authority your `SchemaSystem` would allow to resolve all schema ids that are within this authority’s map keys.
-    * In order to load a schema id(e.g. `my_schema`) with this `FileSystemDocumentAuthority` that is added to your `SchemaSystem` would be as simple as: `schema_system.load_schema("my_schema")`
+    * In order to load a schema id (e.g. `my_schema`) with this `FileSystemDocumentAuthority` that is added to your `SchemaSystem` would be as simple as: `schema_system.load_schema("my_schema")`
 
 _Note: A single `SchemaSystem` can contain multiple `DocumentAuthority`s_
 
@@ -154,6 +154,8 @@ vec![Box::new(
 As your `SchemaSystem` starts growing, it might be possible that you would want to add a new authority to the `SchemaSystem`. 
 For example, you now have a new place where all your schemas are saved. This means you have new `FileSystemAuthority` to add to your `SchemaSystem`.
 Adding a new authority to the `SchemaSystem` expands the search area for loading a schema from `SchemaSystem`. 
+When attempting to resolve a schemaId, `Authority`s are checked in the order in which they were added to the `SchemaSystem`, 
+so any new `Authority` is added with a lower priority than the `Authority`s that are already present.
 
 ```rust
 // assuming the SchemSystem is built into variable: `schema_system`
@@ -272,15 +274,13 @@ let isl_type = IslType::named(
 ### How to create `IslSchema`?
 
 ```rust
-// The `isl-type` defiend in the previous section cna be used here
+// The `isl-type` defined in the previous section can used here
 let isl_schema = IslSchema::new(vec![], vec![isl_type], vec![]);
 ```
 
 ## How to validate an Ion value using a `Schema`?
 
 _Note: The schema file used in this section is previously defined in `How to load a schema?` section_
-
-### How to validate an Ion value using `Schema`?
 
 ```rust
 // This example uses a schema that was created using how to load a schema section (`my_schema.isl`)?
@@ -309,7 +309,7 @@ fn check_value<I: Into<IonSchemaElement> + Debug + Clone>(value: I, type_ref: &T
 
 ### Output
 When run, the code above produces the following output:
-```rust
+```
 5e3
 Violation {
     constraint: "my_int_type",
