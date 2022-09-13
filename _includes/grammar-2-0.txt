@@ -1,0 +1,179 @@
+<ISL_VERSION_MARKER> ::= $ion_schema_2_0
+
+<SCHEMA> ::= <ISL_VERSION_MARKER> <NAMED_TYPE_DEFINITION>...
+           | <ISL_VERSION_MARKER> <HEADER> <NAMED_TYPE_DEFINITION>... <FOOTER>
+
+<HEADER> ::= schema_header::{ <HEADER_FIELD>... }
+
+<HEADER_FIELD> ::= <IMPORTS_DECLARATION>
+                 | <USER_CONTENT_DECLARATION>
+
+<IMPORTS_DECLARATION> ::= imports: [ <IMPORT>... ],
+
+<IMPORT> ::= <IMPORT_SCHEMA>
+           | <IMPORT_TYPE>
+           | <IMPORT_TYPE_ALIAS>
+
+<IMPORT_SCHEMA> ::= { id: <SCHEMA_ID> }
+
+<IMPORT_TYPE> ::= { id: <SCHEMA_ID>, type: <TYPE_NAME> }
+
+<IMPORT_TYPE_ALIAS> ::= { id: <SCHEMA_ID>, type: <TYPE_NAME>, as: <TYPE_NAME> }
+
+<USER_CONTENT_DECLARATION> ::= user_content: { <USER_CONTENT_DECLARATION_FIELD>... }
+
+<USER_CONTENT_DECLARATION_FIELD> ::= schema_header: [ <SYMBOL>... ],
+                                   | type: [ <SYMBOL>... ],
+                                   | schema_footer: [ <SYMBOL>... ],
+
+<FOOTER> ::= schema_footer::{ }
+
+<NAMED_TYPE_DEFINITION> ::= type::{ name: <TYPE_NAME>, <CONSTRAINT>... }
+
+<INLINE_TYPE_DEFINITION> ::= { <CONSTRAINT>... }
+
+<SCHEMA_ID> ::= <STRING>
+              | <SYMBOL>
+
+<TYPE_NAME> ::= <SYMBOL>
+
+<TYPE_REFERENCE> ::=           <TYPE_NAME>
+                   | $null_or::<TYPE_NAME>
+                   |           <INLINE_TYPE_DEFINITION>
+                   | $null_or::<INLINE_TYPE_DEFINITION>
+                   |           <IMPORT_TYPE>
+                   | $null_or::<IMPORT_TYPE>
+
+<OCCURS> ::= occurs: <INT>
+           | occurs: <RANGE_INT>
+           | occurs: optional
+           | occurs: required
+
+<VARIABLY_OCCURRING_TYPE_REFERENCE> ::= { <OCCURS>, <CONSTRAINT>... }
+                                      | <TYPE_REFERENCE>
+
+<NUMBER> ::= <DECIMAL>
+           | <FLOAT>
+           | <INT>
+
+<EXCLUSIVITY> ::= exclusive::
+                | ""
+
+<RANGE_INT> ::= range::[ <EXCLUSIVITY><INT>, <EXCLUSIVITY><INT> ]
+              | range::[ min, <EXCLUSIVITY><INT> ]
+              | range::[ <EXCLUSIVITY><INT>, max ]
+
+<RANGE_NUMBER> ::= range::[ <EXCLUSIVITY><NUMBER>, <EXCLUSIVITY><NUMBER> ]
+                 | range::[ min, <EXCLUSIVITY><NUMBER> ]
+                 | range::[ <EXCLUSIVITY><NUMBER>, max ]
+
+<RANGE_TIMESTAMP> ::= range::[ <EXCLUSIVITY><TIMESTAMP>, <EXCLUSIVITY><TIMESTAMP> ]
+                    | range::[ min, <EXCLUSIVITY><TIMESTAMP> ]
+                    | range::[ <EXCLUSIVITY><TIMESTAMP>, max ]
+
+<RANGE_TIMESTAMP_PRECISION> ::= range::[ <EXCLUSIVITY><TIMESTAMP_PRECISION_VALUE>, <EXCLUSIVITY><TIMESTAMP_PRECISION_VALUE> ]
+                              | range::[ min, <EXCLUSIVITY><TIMESTAMP_PRECISION_VALUE> ]
+                              | range::[ <EXCLUSIVITY><TIMESTAMP_PRECISION_VALUE>, max ]
+
+<CONSTRAINT> ::= <ALL_OF>
+               | <ANNOTATIONS>
+               | <ANY_OF>
+               | <BYTE_LENGTH>
+               | <CODEPOINT_LENGTH>
+               | <CONTAINER_LENGTH>
+               | <CONTAINS>
+               | <CONTENT>
+               | <ELEMENT>
+               | <EXPONENT>
+               | <FIELDS>
+               | <FIELD_NAMES>
+               | <IEEE745_FLOAT>
+               | <NOT>
+               | <ONE_OF>
+               | <ORDERED_ELEMENTS>
+               | <PRECISION>
+               | <REGEX>
+               | <TIMESTAMP_OFFSET>
+               | <TIMESTAMP_PRECISION>
+               | <TYPE>
+               | <VALID_VALUES>
+
+<ALL_OF> ::= all_of: [ <TYPE_REFERENCE>... ]
+
+<ANNOTATIONS_MODIFIER> ::= required::
+                         | closed::
+
+<ANNOTATIONS> ::= annotations: <ANNOTATIONS_MODIFIER>... [ <SYMBOL>... ]
+                | annotations: <TYPE_REFERENCE>
+
+<ANY_OF> ::= any_of: [ <TYPE_REFERENCE>... ]
+
+<BYTE_LENGTH> ::= byte_length: <INT>
+                | byte_length: <RANGE_INT>
+
+<CODEPOINT_LENGTH> ::= codepoint_length: <INT>
+                     | codepoint_length: <RANGE_INT>
+
+<CONTAINER_LENGTH> ::= container_length: <INT>
+                     | container_length: <RANGE_INT>
+
+<CONTAINS> ::= contains: [ <VALUE>... ]
+
+<ELEMENT> ::= element: <TYPE_REFERENCE>
+            | element: distinct::<TYPE_REFERENCE>
+
+<EXPONENT> ::= exponent: <INT>
+             | exponent: <RANGE_INT>
+
+<FIELD> ::= <SYMBOL>: <VARIABLY_OCCURRING_TYPE_REFERENCE>
+
+<FIELDS> ::= fields: { <FIELD>... }
+           | fields: closed::{ <FIELD>... }
+
+<FIELD_NAMES> ::= field_names: <TYPE_REFERENCE>
+                | field_names: distinct::<TYPE_REFERENCE>
+
+<IEEE754_FLOAT> ::= ieee754_float: binary16
+                  | ieee754_float: binary32
+                  | ieee754_float: binary64
+
+<NOT> ::= not: <TYPE_REFERENCE>
+
+<ONE_OF> ::= one_of: [ <TYPE_REFERENCE>... ]
+
+<ORDERED_ELEMENTS> ::= ordered_elements: [ <VARIABLY_OCCURRING_TYPE_REFERENCE>... ]
+
+<PRECISION> ::= precision: <INT>
+              | precision: <RANGE_INT>
+
+<REGEX> ::= regex: <STRING>
+          | regex: i::<STRING>
+          | regex: m::<STRING>
+          | regex: i::m::<STRING>
+
+<TIMESTAMP_OFFSET> ::= timestamp_offset: [ "[+|-]hh:mm"... ]
+
+<TIMESTAMP_PRECISION_VALUE> ::= year
+                              | month
+                              | day
+                              | minute
+                              | second
+                              | millisecond
+                              | microsecond
+                              | nanosecond
+
+<TIMESTAMP_PRECISION> ::= timestamp_precision: <TIMESTAMP_PRECISION_VALUE>
+                        | timestamp_precision: <RANGE_TIMESTAMP_PRECISION>
+
+<TYPE> ::= type: <TYPE_REFERENCE>
+
+<UTF8_BYTE_LENGTH> ::= utf8_byte_length: <INT>
+                     | utf8_byte_length: <RANGE_INT>
+
+<VALID_VALUES> ::= valid_values: [ <VALUE_OR_RANGE>... ]
+                 | valid_values: <RANGE_NUMBER>
+                 | valid_values: <RANGE_TIMESTAMP>
+
+<VALUE_OR_RANGE> ::= <VALUE>
+                   | <RANGE_NUMBER>
+                   | <RANGE_TIMESTAMP>

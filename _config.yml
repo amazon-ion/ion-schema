@@ -6,7 +6,7 @@ baseurl: /ion-schema
 markdown: kramdown
 kramdown:
   input: GFM
-  toc_levels: "2,3" 
+  toc_levels: "1,2"
 highlighter: rouge
 defaults:
   -
