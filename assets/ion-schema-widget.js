@@ -2,45 +2,62 @@ import init, {validate} from "./wasm_ion_schema.js";
 const validateButton = document.getElementById("validate");
 function loadPage() {
     document.getElementById("schema_type").setAttribute("placeholder", "e.g. my_type");
-    document.getElementById("schema_type").value = "";
-    var schemaEditor = ace.edit("schema");
+    document.getElementById("schema_type").value = "short_string";
+
+    const schemaEditor = ace.edit("schema");
     schemaEditor.setOptions({
         mode: 'ace/mode/ion',
         theme: 'ace/theme/cloud9_day',
-        placeholder: "Write your schema here!\ne.g. type::{ name: my_type, type: string }",
+        showPrintMargin: false,
+        tabSize: 2,
+        value: "type::{\n  name: short_string,\n  type: string,\n  codepoint_length: range::[1, 10],\n}",
     });
 
-    var valueEditor = ace.edit("value");
+    const valueEditor = ace.edit("value");
     valueEditor.setOptions({
         mode: 'ace/mode/ion',
         theme: 'ace/theme/cloud9_day',
-        placeholder: "e.g. \"hello\"",
+        showPrintMargin: false,
+        tabSize: 2,
+        value: "\"Hello World!\"",
     });
 }
 
 loadPage();
+
+function _set_output_style(resultDiv, styleName) {
+    var toRemove = [];
+    resultDiv.classList.forEach(value => {
+        if (value.startsWith("bs-callout-")) toRemove += value;
+    })
+    resultDiv.classList.remove(toRemove)
+    resultDiv.classList.add(`bs-callout-${styleName}`)
+}
+
 const show = () => {
-    const pre = document.getElementById('result');
     const schemaContent = document.getElementById('schema').getElementsByClassName("ace_scroller").item(0).innerText;
     const valueContent = document.getElementById('value').getElementsByClassName("ace_scroller").item(0).innerText;
 
     init()
         .then(() => {
             const result = validate(valueContent, schemaContent, document.getElementById('schema_type').value);
+            const pre = document.getElementById('result');
+            const resultDiv = document.getElementById('resultdiv');
             const violation = document.getElementById('violation');
-            violation.textContent = result.violation();
 
+            violation.textContent = "";
             // check if there is any error while validation and alert with the error
             if (result.has_error()) {
-                pre.textContent = "";
-                alert(result.error());
+                _set_output_style(resultDiv, "danger")
+                pre.textContent = result.error();
             } else {
                 if (result.result()) {
-                    pre.style.color = "#009926";
-                    pre.textContent = result.value() + " is valid!";
+                    _set_output_style(resultDiv, "success")
+                    pre.textContent = `${result.value()} is valid!`;
                 } else {
-                    pre.style.color = "#ff0000";
-                    pre.textContent = result.value() + " is invalid!\n";
+                    _set_output_style(resultDiv, "warning")
+                    pre.textContent = `${result.value()} is invalid!`;
+                    violation.textContent = result.violation();
                 }
             }
 

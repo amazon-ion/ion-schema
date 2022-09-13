@@ -30,42 +30,32 @@ $on-laptop:        800px;
 
 
 // ion schema sandbox styling
-#sandbox {
-  height: 100%;
-  width: 100%;
-}
 #schema {
   background-color: $background-color;
-  width: 70%;
   height: 200px;
   position: relative;
 }
 #value {
   background-color: $background-color;
-  width: 70%;
   height: 100px;
   position: relative;
 }
 button {
-  background-color: #fff;
+  background-color: $background-color;
   border: 1px solid #d5d9d9;
-  border-radius: 8px;
+  border-radius: 3px;
   box-sizing: border-box;
   color: #0f1111;
   cursor: pointer;
   display: inline-block;
   font-family: "Amazon Ember",sans-serif;
   font-size: 13px;
-  line-height: 29px;
-  padding: 0 10px 0 11px;
+  line-height: 18px;
   position: relative;
   text-align: center;
-  text-decoration: none;
-  user-select: none;
-  -webkit-user-select: none;
   touch-action: manipulation;
   vertical-align: middle;
-  width: 100px;
+  width: 60px;
 }
 button:hover {
   background-color: #f7fafa;
@@ -78,7 +68,6 @@ button:focus {
 #violation {
   border-left: 0px;
   background-color: $background-color;
-  color: red;
   text-align: left;
 }
 #result {
