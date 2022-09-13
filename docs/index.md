@@ -17,6 +17,7 @@ permalink: /docs/
 * [Modeling SQL Decimals](cookbook/sql-decimals)
 * [Optionally ignoring the occurs requirement for fields](cookbook/ignore-occurs-requirements)
 * [Using Ion Schema Schemas](cookbook/ion-schema-schemas)
+* [Getting started with `ion-schema-rust`](cookbook/ion-schema-rust-getting-started)
 
 ### Other Information
 
