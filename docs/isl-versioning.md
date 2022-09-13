@@ -5,7 +5,7 @@ title:  Ion Schema Language Versioning
 
 ## Introduction
 
-The purpose of this document is to describe how the Ion Schema Language will be versioned. This is a summary of the versioning rules introduced in [RFC: Ion Schema Language Versioning](../../rfcs/ion_schema_2_0/language_versions).
+The purpose of this document is to describe how the Ion Schema Language will be versioned. This is a summary of the versioning rules introduced in [RFC: Ion Schema Language Versioning](../rfcs/ion_schema_2_0/language_versions).
 
 *The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be interpreted as described in [RFC 2119](https://datatracker.ietf.org/doc/html/rfc2119).*
 
