@@ -1,0 +1,12 @@
+<!--
+Creates a colored box with an icon to bring attention to a short bit of text.
+-->
+{% if include.type=="note" %}
+<div markdown="span" class="alert alert-info" role="alert"><i class="fa fa-info-circle"></i> <b>Note:</b> {{include.content}}</div>
+{% elsif include.type=="tip" %}
+<div markdown="span" class="alert alert-success" role="alert"><i class="fa fa-check-square-o"></i> <b>Tip:</b> {{include.content}}</div>
+{% elsif include.type=="important" %}
+<div markdown="span" class="alert alert-warning" role="alert"><i class="fa fa-warning"></i> <b>Important:</b> {{include.content}}</div>
+{% elsif include.type=="warning" %}
+<div markdown="span" class="alert alert-danger" role="alert"><i class="fa fa-exclamation-circle"></i> <b>Warning:</b> {{include.content}}</div>
+{% endif %}
