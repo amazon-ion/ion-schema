@@ -1,5 +1,9 @@
-.jekyll-cache
-.sass-cache
-**/.DS_Store
-_site
+### Jekyll
+_site/
+.sass-cache/
+.jekyll-cache/
+.jekyll-metadata
+### Intellij
 **/.idea/
+### MacOS
+**/.DS_Store
