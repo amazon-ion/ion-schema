@@ -1,11 +1,11 @@
 ---
 layout: news_item
-title: "Web Schema Sandbox"
+title: "New tool: Ion Schema Sandbox"
 date: 2022-09-12
 categories: news ion-schema
 ---
 
-A Web Schema Sandbox was added to this public GitHub website on 12 September 2022.
+A browser-based sandbox environment for Ion Schema has been added to the Ion Schema website.
 
 This sandbox can be used to validate Ion values for a particular type defined in Ion Schema. 
 The sandbox is created using `ion-schema-rust` latest pre-release version.
