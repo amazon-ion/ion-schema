@@ -391,11 +391,14 @@ The `distinct` annotation on the type reference argument indicates that the cons
 
 {% include grammar-element.md productions="fields,field" %}
 
-Declares one or more field constraints of a struct.
+The `fields` constraint is a collection of field definitions—a field name and an associated type—that constrain the values in a struct.
 
-Field names defined for a particular struct type shall be unique.
-A field may narrow its declared type by specifying additional constraints. 
-By default, a field is constrained by `occurs: optional`.
+The values for all occurrences of a field name must match the associated type.
+Ion structs allow field names to be repeated, and a field definition applies to all occurrences of a field name in the value being validated.
+In addition, the number of times that a field name may occur can be specified with `occurs`.
+(See [§Variably-Occurring Type References](#variably-occurring-type-references).)
+If a field definition does not specify a value for `occurs`, the field may occur zero or one times.
+The `fields` constraint may not have multiple definitions for a given field name—i.e. field names may not be repeated within a single instance of the `fields` constraint.
 
 {% comment %}{% include example.md title="open `fields`" code_file="examples/placeholder.isl" %}{% endcomment %}
 
@@ -443,6 +446,7 @@ For example, if you specify `one_of: [$null_or::int, $null_or::float]`, the valu
 Defines constraints over a list of values in a heterogeneous list, S-expression, or document.
 Each value in a list, S-expression, or document is expected to be valid against the type in the corresponding position of the specified types list.
 Each type is implicitly defined with `occurs: 1`—behavior which may be overridden.
+(See [§Variably-Occurring Type References](#variably-occurring-type-references).)
 
 When specified, this constraint fully defines the content of a list, S-expression, or document—open content is not allowed.
 
@@ -523,7 +527,8 @@ For more details about offsets, see the [Ion Specification – Timestamps](https
 {% include grammar-element.md productions="timestamp_precision,timestamp_precision_value,range_timestamp_precision" %}
 
 Indicates the exact or minimum/maximum precision of a timestamp.
-Valid precision values are, in order of increasing precision: `year`, `month`, `day`, `minute`, `second`, `millisecond`, `microsecond`, and `nanosecond`.
+Timestamp precision ranges follow the rules set out in [§Ranges](#ranges).
+Valid timestamp precision values are, in order of increasing precision: `year`, `month`, `day`, `minute`, `second`, `millisecond`, `microsecond`, and `nanosecond`.
 
 {% comment %}{% include example.md title="`timestamp_precision`" code_file="examples/placeholder.isl" %}{% endcomment %}
 
@@ -547,9 +552,9 @@ Rather, they have no length at all, and are always invalid for this constraint.
 
 ## valid_values
 
-{% include grammar-element.md productions="valid_values,value_or_range" %}
+{% include grammar-element.md productions="valid_values,value_or_range,number_range,timestamp_range" %}
 
-A list of acceptable, non-annotated values;  any values not present in the list are invalid.
+A list of acceptable, non-annotated values; any values not present in the list are invalid.
 The argument to this constraint can be a range or a list of unannotated values or a list containing a mix of ranges and unannotated values.
 
 Ignoring annotations, the value must match one of the list of valid values or be within the boundaries of a range.
@@ -564,6 +569,7 @@ Recall that a `document` is not a single Ion value, but rather a stream of value
 " %}
 
 For numeric and timestamp types, `valid_values` may optionally be defined as a range.
+Numeric and timestamp ranges follow all the rules specified in [§Ranges](#ranges).
 
 A `number` range includes all values of any numeric type (i.e. `float`, `int`, and `decimal`) that fall within that range mathematically.
 When testing a value for inclusion, the range bounds and the value that is being tested will all be converted to `decimal` values for the sake of comparison.
