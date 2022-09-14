@@ -1,7 +1,7 @@
 ---
 layout: news_item
 title: "RFC: Ion Schema 2.0 - Approved"
-date: 2022-07-26
+date: 2022-08-25
 categories: news ion-schema
 ---
 
