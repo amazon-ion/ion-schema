@@ -6,7 +6,7 @@ categories: news ion-schema-rust
 ---
 
 Ion Schema Rust 0.5.0 is now available.
-This is beta release includes all the functionalities of Ion schema as per the [Ion schema 1.0 specification]({{site.baseurl}}/docs/isl-1-0/spec). 
+This beta release includes all the functionalities of Ion Schema as per the [Ion Schema 1.0 specification]({{site.baseurl}}/docs/isl-1-0/spec). 
 
 | [Release Notes v0.5.0](https://github.com/amzn/ion-schema-rust/releases/tag/v0.5.0) | [Ion Schema Rust](https://github.com/amzn/ion-schema-rust) | [Getting started cookbook]({{site.baseurl}}/docs/cookbook/ion-schema-rust-getting-started)
 
