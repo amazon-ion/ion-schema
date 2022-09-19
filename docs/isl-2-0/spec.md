@@ -143,7 +143,7 @@ All other type definitions must not declare a `name`.
 
 {% include grammar-element.md productions="type_reference,type_name,import_type" %}
 
-Some constraints accept a type or list of types as their argument.
+Some constraints accept a type reference or list of type references as their argument.
 
 ### Nullable Type References
 
