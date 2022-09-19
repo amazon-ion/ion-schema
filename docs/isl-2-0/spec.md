@@ -64,7 +64,7 @@ Specifying a `type` narrows the import to that single type, and a type may be im
 The core types and Ion types are implicitly imported before any specified imports; specified imports are performed in order.
 Once an implementation has finished loading a schema, if any imports could not be resolved, it must result in an error. 
 If two types with the same name are imported, or if a type defined within a schema has the same name as an imported type, this must result in an error.
-Only named, top-level types of a schema may be imported in another schema.
+Only named types of a schema may be imported in another schema.
 Types may only be imported from the schema where they are declared; importing a type to a schema does not make that type transitively available to any other schemas. 
 
 {% comment %}{% include example.md title="A schema that imports types from other schemas" code_file="examples/placeholder.isl" %}{% endcomment %}
@@ -85,7 +85,11 @@ Beware that the choice of authority affects the way schemas can be imported by o
 The Ion Schema type system is a hybrid of [nominal](https://en.wikipedia.org/wiki/Nominal_type_system) and [structural](https://en.wikipedia.org/wiki/Structural_type_system) typing.
 All Ion values are nominally one of the types defined in the [Ion data model](https://amzn.github.io/ion-docs/docs/spec.html#the-ion-data-model).
 Beyond that, a value (or stream of values) may belong to one or more structural types.
-(All values belong to at least one structural type—the top type `$any`.)
+
+{% include note.html type="note" content="
+The [_universal type_](https://en.wikipedia.org/wiki/Top_type) (sometimes called the _top type_) is a type that includes all possible values.
+In Ion Schema, the universal type is called `$any`, and it is defined as a type with no constraints.
+" %}
 
 ## Built-in Types
 
@@ -101,7 +105,7 @@ Ion Schema implementations may represent this stream as a list, sequence, array,
 
 In addition, Ion Schema provides the following structural types:
 
-- `$any`: the [top type](https://en.wikipedia.org/wiki/Top_type); every value is valid
+- `$any`: the _universal type_; includes every possible value
 - `$lob`: represents a `$blob` or `$clob`
 - `$number`: represents a `$decimal`, `$float`, or `$int`
 - `$text`: represents a `$string` or `$symbol`
@@ -111,7 +115,7 @@ In addition, Ion Schema provides the following structural types:
 - `lob`: represents a (non-null) `blob` or `clob`
 - `number`: represents a (non-null) `decimal`, `float`, or `int`
 - `text`: represents a (non-null) `string` or `symbol`
-- `nothing`: the [empty type](https://en.wikipedia.org/wiki/Empty_type); it has no valid value
+- `nothing`: the [_empty type_](https://en.wikipedia.org/wiki/Empty_type); it has no valid value
 
 {% include note.html type="tip" content="
 For the built-in types, the presence of a leading `$` sigil indicates that the type includes null values.
@@ -126,21 +130,18 @@ The set of values which belong to a type is the intersection of the values that 
 In order for a value to be a valid instance of a type, the value must not violate any of the type's constraints.
 A type definition with no constraints is equivalent to `$any`.
 
-{% include example.md title="The definition of `$any`, the top type" markdown="
-```ion
-type::{
-  name: $any,
-}
-```
-" %}
+### Declaring a Type Name
 
-Top-level types must declare a `name`. All other type definitions must not declare a `name`.
+A _named type definition_ is a special case of type definition.
+A named type definition must be a top-level value in the schema document that is annotated with `type`. 
+A named type definition must contain the field `name`, where the value is an Ion symbol that is to be the name of the type.
+All other type definitions must not declare a `name`.
+
+<!-- TODO: add example of named vs inline type -->
 
 ## Type References
 
 {% include grammar-element.md productions="type_reference,type_name,import_type" %}
-
-
 
 Some constraints accept a type or list of types as their argument.
 
@@ -153,8 +154,6 @@ When the `$null_or` annotation is present on any type reference, it SHALL be eva
 
 For example, to allow `null` or any non-null integer value, you would use `$null_or::int`.
 To allow `null`, `null.int`, or any non-null integer value, you would use `$null_or::$int`.
-
-<!-- Add Example: a nullable type reference using $null_or and the equivalent using an explicit union type -->
 
 {% include example.md title="Nullable Type Reference" markdown="
 The following types are equivalent.
