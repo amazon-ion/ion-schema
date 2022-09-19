@@ -223,7 +223,7 @@ If both a minimum and maximum values are specified (i.e. `min` and `max` are not
 
 {% include grammar-element.md productions="all_of" %}
 
-Value must be valid for all the types listed.
+Value must be valid for all the types listed. The list of types must not be empty.
 
 {% include example.md title="`all_of` constraint" markdown="
 ```ion
@@ -289,7 +289,7 @@ Anything that can be represented by the simplified syntax can also be represente
 
 {% include grammar-element.md productions="any_of" %}
 
-The value must match any of the specified types.
+The value must match any of the specified types. The list of types must not be empty.
 
 {% include example.md title="`any_of` constraint" code_file="examples/placeholder.isl" %}
 
@@ -429,7 +429,7 @@ Value must not be valid for the type.
 
 {% include grammar-element.md productions="one_of" %}
 
-Value must be valid for exactly one of the types.
+Value must be valid for exactly one of the types. The list of types must not be empty.
 
 {% include note.html type="important" content="
 Specifying two overlapping types may cause unexpected results.
