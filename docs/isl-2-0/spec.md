@@ -36,7 +36,7 @@ A schema is a collection of types that can be used to constrain the Ion data mod
 
 A schema consists of a schema version marker `$ion_schema_2_0` followed by an optional schema header, zero or more type definitions, and an optional schema footer.
 The schema header is a struct, annotated with `schema_header`, with an optional `imports` field for leveraging types from other schemas.
-The schema header may also have an optional `user_content` field that is used to declared reserved words that are to be used for open content.
+The schema header may also have an optional `user_content` field that is used to declared reserved symbols that are to be used for open content.
 The schema footer is a struct that it annotated with `schema_footer`.
 While a header and footer are both optional, a footer is required if a header is present (and vice-versa).
 A schema may not have more than one header or more than one footer.
@@ -72,13 +72,11 @@ Types may only be imported from the schema where they are declared; importing a 
 ### Schema Authorities
 
 The structure of an `id` string is defined by the schema authority responsible for the schema/type(s) being imported.
-Note that runtime resolution of a schema over a network presents availability and security risks, and should therefore be avoided.
+Note that runtime resolution of a schema over a network presents availability and security risks that must be taken into consideration.
 
 When resolving a schema, authorities may choose to follow well-known patterns; for example:
 - a filesystem authority might specify that an `id` string corresponds to an ISL file relative to some base, e.g.:`"{base}/com/example/core/Customer.isl"`
 - a REST authority might specify that an `id` string is a resource URL that corresponds to an ISL file, e.g.: `"https://{host}:{port}/{base}/com/example/core/Customer"` (again, note the inherent availability and security risks here)
-
-Beware that the choice of authority affects the way schemas can be imported by other schemas.
 
 # Types
 
@@ -95,30 +93,38 @@ In Ion Schema, the universal type is called `$any`, and it is defined as a type 
 
 Ion Schema has several built-in types that are implicitly imported before any other imports are handled.
 
-The nominal Ion types are prefixed with `$`, and correspond precisely with the types defined by the Ion data model, including strongly-typed null values:
-- **scalars:** `$blob`, `$bool`, `$clob`, `$decimal`, `$float`, `$int`, `$null`,
-  `$string`, `$symbol`, `$timestamp`
-- **containers:** `$list`, `$sexp`, `$struct`
+The nominal Ion types are prefixed with `$`, and correspond precisely with the types defined by [the Ion data model](https://amzn.github.io/ion-docs/docs/spec.html#the-ion-data-model).
+For example, `$int` contains all non-null, Ion `int` values as well as `null.int`.
+(As in the Ion data model, the presence or absence of annotations does not affect the nominal type for a given value, so `foo::null.int` or `null.int` with any other list of annotations is also in `$int`.)
+The type `$null` contains only `null.null` (which is equivalent to `null`).
+The nominal Ion types are `$blob`, `$bool`, `$clob`, `$decimal`, `$float`, `$int`, `$null`, `$string`, `$symbol`, `$timestamp`, `$list`, `$sexp`, and `$struct`.
 
 Ion Schema adds one more nominal type, `document`, which is a stream of top-level Ion values.
 Ion Schema implementations may represent this stream as a list, sequence, array, or other similar data structure depending on what is idiomatic for the language in which it is implemented.
 
 In addition, Ion Schema provides the following structural types:
 
-- `$any`: the _universal type_; includes every possible value
-- `$lob`: represents a `$blob` or `$clob`
-- `$number`: represents a `$decimal`, `$float`, or `$int`
-- `$text`: represents a `$string` or `$symbol`
+- `$any`: the _universal type_ that includes every value. It is the union of all nominal types, including `$null`.
+- `$lob`: union of `$blob` or `$clob`
+- `$number`: union of `$decimal`, `$float`, or `$int`
+- `$text`: union of `$string` or `$symbol`
 
-- `any`: represents any value that is not a null value
 - `blob`, `bool`, `clob`, `decimal`, `float`, `int`, `string`, `symbol`, `timestamp`, `list`, `sexp`, `struct` correspond to the Ion types, except that they do not allow null values.
-- `lob`: represents a (non-null) `blob` or `clob`
-- `number`: represents a (non-null) `decimal`, `float`, or `int`
-- `text`: represents a (non-null) `string` or `symbol`
+- `any`: represents any value that is not a null value. It is the union of `blob`, `bool`, `clob`, `decimal`, `float`, `int`, `string`, `symbol`, `timestamp`, `list`, `sexp`, `struct`, and `document`.
+- `lob`: union of `blob` or `clob`
+- `number`: union of `decimal`, `float`, or `int`
+- `text`: union of `string` or `symbol`
 - `nothing`: the [_empty type_](https://en.wikipedia.org/wiki/Empty_type); it has no valid value
 
 {% include note.html type="tip" content="
-For the built-in types, the presence of a leading `$` sigil indicates that the type includes null values.
+For the built-in types, the presence of a leading `$` sigil generally indicates that the type includes the respective strongly-typed null values.
+The universal type `$any` is an exception since it also includes the untyped null.
+" %}
+
+{% include note.html type="note" content="
+You may have noticed that there is a `$null` type, but there is no corresponding `null` type (as there is with `$int` and `int`).
+That is because a non-null equivalent of the type `$null` is an empty type.
+The non-null equivalent of `$null` is actually `nothing`.
 " %}
 
 ## Type Definitions
@@ -154,6 +160,7 @@ When the `$null_or` annotation is present on any type reference, it SHALL be eva
 
 For example, to allow `null` or any non-null integer value, you would use `$null_or::int`.
 To allow `null`, `null.int`, or any non-null integer value, you would use `$null_or::$int`.
+To allow `null` or any positive integer, you would use `$null_or::{ type: int, valid_values: range::[1, max] }`.
 
 {% include example.md title="Nullable Type Reference" markdown="
 The following types are equivalent.
@@ -254,10 +261,23 @@ The `annotations` constraint specifies the type and/or constraints for all annot
 The list of annotation symbols must match the given type.
 
 {% capture sample_code %}
-annotations: { contains: [red, blue] }                   // Annotations must contain "red" and "blue" in any order, and may contain other annotations, such as "yellow"
-annotations: { element: { valid_values: [red, blue] } }  // Only the annotations "red" and "blue" are permitted, but they are not required
-annotations: { container_length: 0 }                     // No annotations are permitted
-annotations: { element: { regex: "\\w+(\\.\\w+)" } }     // Annotations must match the regex
+// Annotations must contain "red" and "blue" in any order, and may contain other annotations, such as "yellow"
+annotations: { contains: [red, blue] }                   
+
+// Only the annotations "red" and "blue" are permitted, but they are not required
+annotations: { element: { valid_values: [red, blue] } }  
+
+// No annotations are permitted
+annotations: { container_length: 0 }                     
+
+// Annotations must match the regex
+annotations: { element: { regex: "\\w+(\\.\\w+)" } }   
+
+// Each annotation must not be more than 8 bytes when encoded as UTF8
+annotations: { element: { utf8_byte_length: range::[min,8] } }     
+
+// Value must have the annotation "foo", optionally followed by one more annotation which can be anything
+annotations: { ordered_elements: [ { valid_values: [foo] }, { occurs: optional, type: any } ]   
 {% endcapture %}
 {% include example.md title="`annotations` constraint; standard syntax" code=sample_code %}
 
@@ -298,7 +318,10 @@ The value must match any of the specified types. The list of types must not be e
 {% include grammar-element.md productions="byte_length" %}
 
 The exact or minimum/maximum number of bytes in a blob or clob.
-Note that this constrains the number of bytes in the input source, which may differ from the number of bytes needed to serialize the blob/clob.
+Note that this constrains the number of bytes in the blob or clob _value_, which may differ from the number of bytes needed to serialize the blob/clob.
+<!-- Note: we need to use liquid tags to escape the double '{' in the following lines because otherwise these will be processed as a liquid tag. The escape code &#123; does not work because it's between backticks, which gets rendered into a <pre></pre>. /-->
+For example, the clob `{{"{{"}}"hello"}}` has a `byte_length` of 5 bytes, but the actual number of bytes in the serialized representation is 11 bytes.
+The same clob value, could also be encoded as `{{"{{"}} '''hello''' }}`, and it would still have a `byte_length` of 5 bytes, but the actual number of bytes in the serialized representation is now 17 bytes.
 The values `null.blob` and `null.clob` do not have a length of 0.
 Rather, they have no length at all, and are always invalid for this constraint.
 
@@ -357,7 +380,7 @@ For the purpose of this constraint, the comparison of the values (including any 
 {% include grammar-element.md productions="exponent" %}
 
 This constraint specifies an exact or minimum/maximum range indicating the exponent of the Ion decimal.
-Remember that decimal values with digits after the decimal point have a _negative_ exponent, so to require at least two digits after
+Remember that decimal values with digits after the decimal point have a _negative_ exponent, so to require at least two digits after the decimal point, you must specify `exponent: range::[min, -2]`.
 
 {% include note.html type="tip" content="See [Modeling SQL Decimals](../cookbook/sql-decimals.md) to learn how `exponent` relates to the concept of _scale_." %} 
 
@@ -475,8 +498,10 @@ Regular expressions shall be limited to the following features:
 |                 `.` | any codepoint                        |
 |             `[abc]` | codepoint class                      |
 |             `[a-z]` | range codepoint class                |
+|        `[a-cABC\d]` | union codepoint class                |
 |            `[^abc]` | complemented codepoint class         |
 |            `[^a-z]` | complemented range codepoint class   |
+|       `[^a-cABC\d]` | complemented union codepoint class   |
 |                 `^` | anchor at the beginning of the input |
 |                 `$` | anchor at the end of the input       |
 |             `(...)` | grouping                             |
@@ -582,7 +607,7 @@ A `timestamp` range includes any `timestamp` that falls between the minimum and 
 All [`timestamp` values](https://amzn.github.io/ion-docs/docs/spec.html#timestamp) represent an instant in time.
 A `timestamp` with limited precision (for example, a year-only timestamp like `2007T`) maps to an instant by assuming that all unspecified time unit fields are effectively zero (or one for the month and day units). 
 `2007T` would map to the instant represented by `2007-01-01T00:00.000-00:00`.
-Note that `timestamp` values that do not have a time component (that is: `YYYYT`, `YYYY-MMT`, and `YYYY-MM-DDT`) timestamps) have an unknown offset (`-00:00`).
+Note that `timestamp` values that do not have a time component (that is `YYYYT`, `YYYY-MMT`, and `YYYY-MM-DDT` timestamps) have an unknown offset (`-00:00`).
 Timestamps that have an unknown offset are UTC timestamps that make no assertion about the offset in which they occurred.
 The value `null.timestamp` is never in the bounds of a timestamp range, and `timestamp` ranges do not include values of any other type.
 
@@ -596,9 +621,10 @@ This additional content may be used for documentation, integrations with other t
 A schema header, type definition, or schema footer may include extra fields that are not explicitly stated in the Ion Schema specification.
 These extra fields may have any field name that is not a *keyword*.
 If the field name is a *reserved symbol*, its use as open content must be declared in the appropriate subfield of the `user_content` field in the schema header.
-For example, the reserved word `list_type` may be used in a type definition if `user_content: { type: [ list_type ] }` is present in the schema header.
+For example, the reserved symbol `list_type` may be used in a type definition if `user_content: { type: [ list_type ] }` is present in the schema header.
 
 An Ion Schema MAY include extra top-level values that are not explicitly specified in the Ion Schema specification, but any top-level open content MUST NOT be annotated with a *reserved symbol*.
+Top-level open content may appear before, after, or in between the Ion Schema version marker, header, types, and footer.
 Note that Ion Schema version markers are always interpreted as Ion Schema version markers and can never be valid open content.
 
 No other open content is allowed except for what is explicitly identified in this section.
@@ -616,9 +642,22 @@ Whether a reserved symbol is considered a keyword is context dependent.
 * There are no keywords in a schema footer.
 
 {% capture sample_code %}
+penguins
+
+$ion_schema_2_0
+
+$note_to_self::"I really like penguins. Get ready!"
+3
+2
+1
+Go
+
 schema_header::{
   _info: "This schema is about penguins."
 }
+
+(I <3 Penguins!)
+
 type::{
   name: adelie,
   type: penguin,
@@ -626,6 +665,9 @@ type::{
   _crested: false,
   _banded: false,
 }
+
+"I have watched many penguin documentaries and know many facts about penguins."
+
 type::{
   name: humboldt,
   type: penguin,
@@ -633,9 +675,18 @@ type::{
   _crested: false,
   _banded: true,
 }
+
+FAQ::{ 
+  q: "What is the biggest type of penguin?",
+  a: "The emperor penguin."
+}
+
 schema_footer::{}
+
+[ "Goodbye" ]
+
 {% endcapture %}
-{% include example.md title="A schema with open content using un-reserved symbols as open content field names." code=sample_code %}
+{% include example.md title="A schema with open content using un-reserved symbols as open content field names, and top-level open content displaying the author's excitement and love for the subject." code=sample_code %}
 
 {% capture sample_code %}
 schema_header::{
@@ -663,11 +714,13 @@ schema_footer::{}
 {% endcapture %}
 {% include example.md title="The same schema with open content using reserved symbols as open content field names." code=sample_code %}
 
+{% comment %} TODO: include an example of top-level open content used in ion-schema-tests.{% endcomment %}
+
 # Compatibility with Ion Schema 1.0
 
 Ion Schema 2.0 will be fully interoperable with Ion Schema 1.0.
 
-* Any Ion Schema implementation with support for Ion Schema 2.0 must also support reading Ion Schema 1.0.
+* Any Ion Schema implementation with support for Ion Schema 2.0 must also support reading Ion Schema 1.0. (See [RFC: Ion Schema 2.0](../../rfcs/ion_schema_2_0/ion_schema_2_0) for the differences between Ion Schema 1.0 and 2.0.)
 * Ion Schema 2.0 shall allow importing schemas written in Ion Schema 1.0.
 * Any implementation of ISL 1.0 that also implements ISL 2.0 must allow types from an ISL 2.0 schema to be imported by an ISL 1.0 schema.
 * The interoperability requirements stated here shall not apply to Ion Schema 3.0 or any future major version unless that major version explicitly restates them. (i.e., Ion Schema 3.0 is allowed to say that implementations must also support Ion Schema 2.0 but are not required to support Ion Schema 1.0.)
