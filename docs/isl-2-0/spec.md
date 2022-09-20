@@ -71,7 +71,7 @@ Types may only be imported from the schema where they are declared; importing a 
 
 ### Schema Authorities
 
-The structure of a `id` string is defined by the schema authority responsible for the schema/type(s) being imported.
+The structure of an `id` string is defined by the schema authority responsible for the schema/type(s) being imported.
 Note that runtime resolution of a schema over a network presents availability and security risks, and should therefore be avoided.
 
 When resolving a schema, authorities may choose to follow well-known patterns; for example:
