@@ -268,14 +268,11 @@ more details.
 
 # Open Content
 
-The default behavior for containers is to allow additional content
-beyond what is explicitly specified for a given type;  this is
-referred to as open content.  For a given type that is not
-constrained by `content: closed`, the following open content
-is considered valid as long as the content doesn't exceed any
-specified constraints:
-  - structs may contain additional fields
-  - lists and S-expressions may contain additional elements
+The default behavior for structs is to allow additional content
+beyond what is explicitly specified for a given type; this is
+referred to as open content.  For a given struct that is not
+constrained by `content: closed`, it may contain additional fields
+as long as the content doesn't exceed any specified constraints.
 
 Since annotations are considered to be metadata of a value, specifying
 additional annotations on a value is valid independent of whether
@@ -664,8 +661,8 @@ structs, and documents.
 <code><b>container_length:</b> <i>&lt;INT&gt;</i></code><br/>
 <code><b>container_length:</b> <i>&lt;RANGE&lt;INT&gt;&gt;</i></code>
 
-The exact or minimum/maximum number of elements in a list or
-S-expression, or fields in a struct.
+The exact or minimum/maximum number of elements in a list,
+S-expression, or document, or fields in a struct.
 
 > ```
 > container_length: 5
@@ -674,28 +671,12 @@ S-expression, or fields in a struct.
 > container_length: range::[10, 100]
 > ```
 
-### content
-
-<code><b>content:</b> closed</code>
-
-The default behavior for containers is to allow "open" content,
-meaning that it is valid to provide additional elements in a list or
-S-expression, or fields in a struct (although such additional content
-might exceed a constraint and thus cause the value to be invalid for
-that reason). This constraint indicates that additional fields in a
-struct, or additional elements in a list, S-expression, or document,
-are not allowed.
-
-> ```
-> content: closed
-> ```
-
 ### element
 
 <code><b>element:</b> <i>&lt;TYPE_REFERENCE&gt;</i></code><br/>
 
 Defines the type and/or constraints for all values within a
-homogeneous list, S-expression, or struct.
+homogeneous list, S-expression, struct, or document.
 
 > ```
 > element: string
@@ -708,7 +689,7 @@ homogeneous list, S-expression, or struct.
 
 <code><b>contains:</b> [ <i>&lt;VALUE&gt;...</i> ]</code>
 
-Indicates that the list or S-expression is expected to contain all of
+Indicates that the list, S-expression, or document is expected to contain all of
 the specified values, in no particular order.
 
 > ```
@@ -761,6 +742,20 @@ constraints. By default, a field is constrained by `occurs: optional`.
 >   city: string,
 >   age: { type: int, valid_values: range::[0, 200] },
 > }
+> ```
+
+### content
+
+<code><b>content:</b> closed</code>
+
+The default behavior for structs is to allow "open" content, 
+meaning that it is valid to provide additional fields in a struct 
+(although such additional content might exceed a constraint and 
+thus cause the value to be invalid for that reason). 
+This constraint indicates that additional fields in a struct are not allowed.
+
+> ```
+> content: closed
 > ```
 
 ## Logic Constraints
