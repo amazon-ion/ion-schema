@@ -250,7 +250,7 @@ The "Simple" syntax is based on the Ion Schema 1.0 `annotations` syntax, and is 
 ### Standard Syntax
 
 The `annotations` constraint specifies the type and/or constraints for all annotations of a value.
-[The annotations themselves are symbols _tokens_](https://amzn.github.io/ion-docs/docs/spec.html#annot) but will be represented as a non-null list of non-null, un-annotated symbol _values_ for the purpose of validation.
+[The annotations themselves are symbols _tokens_](https://amzn.github.io/ion-docs/docs/spec.html#annot) but will be considered a non-null list of non-null, un-annotated symbol _values_ for the purpose of validation.
 The list of annotation symbols must match the given type.
 
 {% capture sample_code %}
