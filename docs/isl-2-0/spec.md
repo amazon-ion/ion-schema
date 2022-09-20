@@ -197,7 +197,7 @@ Constraints can be repeated, and when they are, both instances of the constraint
 
 Generally speaking, constraints must reject null values as invalid.
 For example, the precision and scale constraints must reject a null value, as `null` does not have a precision or scale to evaluate.
-The `fields` constraint must reject `null.struct`, as `null.struct` doesn't have any fields.
+The `fields` constraint must reject `null.struct`, as `null.struct` doesn't have a collection of fields.
 Similar reasoning applies to the expected handling of null values by most constraints.
 The `contains`, `annotations`, `valid_values`, and type-algebra constraints are exceptions to this, as these constraints may be defined such that a null value is valid.
 
