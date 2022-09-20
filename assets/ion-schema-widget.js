@@ -35,8 +35,8 @@ function _set_output_style(resultDiv, styleName) {
 }
 
 const show = () => {
-    const schemaContent = document.getElementById('schema').getElementsByClassName("ace_scroller").item(0).innerText;
-    const valueContent = document.getElementById('value').getElementsByClassName("ace_scroller").item(0).innerText;
+    const schemaContent = ace.edit("schema").getValue();
+    const valueContent = ace.edit("value").getValue();
 
     init()
         .then(() => {
