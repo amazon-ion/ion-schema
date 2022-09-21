@@ -623,25 +623,40 @@ These extra fields may have any field name that is not a *keyword*.
 If the field name is a *reserved symbol*, its use as open content must be declared in the appropriate subfield of the `user_content` field in the schema header.
 For example, the reserved symbol `list_type` may be used in a type definition if `user_content: { type: [ list_type ] }` is present in the schema header.
 
+{% capture sample_code %}
+```ion
+schema_header::{
+  info: "This schema is about penguins.",
+  user_content: {
+    schema_header: [info],
+    type: [region, crested, banded],
+  }
+}
+type::{
+  name: adelie,
+  type: penguin,
+  region: antarctica,
+  crested: false,
+  banded: false,
+}
+type::{
+  name: humboldt,
+  type: penguin,
+  region: south_america,
+  crested: false,
+  banded: true,
+}
+schema_footer::{}
+```
+{% endcapture %}
+{% include example.md title="A schema with open content using reserved symbols as open content field names." markdown=sample_code %}
+
 An Ion Schema MAY include extra top-level values that are not explicitly specified in the Ion Schema specification, but any top-level open content MUST NOT be annotated with a *reserved symbol*.
 Top-level open content may appear before, after, or in between the Ion Schema version marker, header, types, and footer.
 Note that Ion Schema version markers are always interpreted as Ion Schema version markers and can never be valid open content.
 
-No other open content is allowed except for what is explicitly identified in this section.
-
-### Reserved Symbols
-
-The set of reserved symbols SHALL be all symbols matching the regular expression `^(\$ion_schema(_.*)?|[a-z][a-z0-9]*(_[a-z0-9]+)*)$`.
-Informally stated, this is the symbol `$ion_schema`, all symbols starting with `$ion_schema_`, and all [identifier symbols](https://amzn.github.io/ion-docs/docs/spec.html#symbol) that are *snake case* and start with an unaccented ascii, lower-case letter.
-
-### Keywords
-A keyword is a reserved symbol that has been assigned a meaning by the Ion Schema specification.
-Whether a reserved symbol is considered a keyword is context dependent.
-* Within the schema header, the keywords SHALL be `imports` and `user_content`.
-* Within a type definition, the keywords SHALL be `name`, `occurs`, and `id` , as well as all the constraints defined in this version of the Ion Schema specification (which are `all_of`, `annotations`, `any_of`, `byte_length`, `codepoint_length`, `container_length`, `contains`, `element`, `exponent`, `field_names`, `fields`, `id`, `name`, `not`, `occurs`, `one_of`, `ordered_elements`, `precision`, `regex`, `timestamp_offset`, `timestamp_precision`, `type`, `utf8_byte_length`, and `valid_values`).
-* There are no keywords in a schema footer.
-
 {% capture sample_code %}
+```ion
 penguins
 
 $ion_schema_2_0
@@ -676,45 +691,66 @@ type::{
   _banded: true,
 }
 
-FAQ::{ 
+FAQ::{
   q: "What is the biggest type of penguin?",
   a: "The emperor penguin."
 }
 
+TODO::
+'''Add definitions for southern rockhopper penguins, emperor penguins, king '''
+'''penguins, gentoo penguins, chinstrap penguins, and macaroni penguins.    '''
+
 schema_footer::{}
 
 [ "Goodbye" ]
-
+```
 {% endcapture %}
-{% include example.md title="A schema with open content using un-reserved symbols as open content field names, and top-level open content displaying the author's excitement and love for the subject." code=sample_code %}
-
-{% capture sample_code %}
-schema_header::{
-  info: "This schema is about penguins."
-  user_content: {
-    schema_header: [info],
-    type: [region, crested, banded],
-  }
-}
-type::{
-  name: adelie,
-  type: penguin,
-  region: antarctica,
-  crested: false,
-  banded: false,
-}
-type::{
-  name: humboldt,
-  type: penguin,
-  region: south_america,
-  crested: false,
-  banded: true,
-}
-schema_footer::{}
-{% endcapture %}
-{% include example.md title="The same schema with open content using reserved symbols as open content field names." code=sample_code %}
+{% include example.md title="A schema with open content using un-reserved symbols as open content field names, and top-level open content displaying the author's excitement and love for the subject." markdown=sample_code %}
 
 {% comment %} TODO: include an example of top-level open content used in ion-schema-tests.{% endcomment %}
+
+No other open content is allowed except for what is explicitly identified in this section.
+
+#### Reserved Symbols
+
+The set of reserved symbols SHALL be all symbols matching the regular expression `^(\$ion_schema(_.*)?|[a-z][a-z0-9]*(_[a-z0-9]+)*)$`.
+Informally stated, this is the symbol `$ion_schema`, all symbols starting with `$ion_schema_`, and all [identifier symbols](https://amzn.github.io/ion-docs/docs/spec.html#symbol) that are *snake case* and start with an unaccented ascii, lower-case letter.
+
+#### Keywords
+A keyword is a reserved symbol that has been assigned a meaning by the Ion Schema specification.
+The following is a list of all keywords in Ion Schema 2.0.
+The keywords in this list are case-sensitive, so `ALL_OF`, for example, is not a keyword.
+```ion
+all_of
+annotations
+any_of
+as
+byte_length
+codepoint_length
+container_length
+contains
+element
+exponent
+field_names
+fields
+id
+imports
+name
+not
+occurs
+one_of
+ordered_elements
+precision
+regex
+schema_footer
+schema_header
+timestamp_offset
+timestamp_precision
+type
+user_content
+utf8_byte_length
+valid_values
+```
 
 # Compatibility with Ion Schema 1.0
 
