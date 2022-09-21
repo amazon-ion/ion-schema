@@ -692,7 +692,7 @@ type::{
 }
 
 FAQ::{
-  q: "What is the biggest type of penguin?",
+  q: "What is the biggest extant species of penguin?",
   a: "The emperor penguin."
 }
 
