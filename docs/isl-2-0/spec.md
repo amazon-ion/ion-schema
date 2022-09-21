@@ -26,7 +26,6 @@ This document does not assume that the reader is familiar with the Ion Schema 1.
 This document provides snippets of a BNF-style grammar for the Ion Schema Language.
 This grammar is intended as a learning aid and is _not_ authoritative.
 The full BNF-style grammar can be found [here](bnf-grammar) along with a discussion of the grammar's known limitations.
-For an authoritative grammar, see [`ion-schema-schemas`](https://github.com/amzn/ion-schema-schemas).
 
 # Schemas
 
@@ -198,13 +197,13 @@ Constraints are the fundamental building blocks of types.
 Each constraint is a rule that restricts the values that are valid for the type.
 
 The order of constraints does not matter.
-Constraints can be repeated, and when they are, both instances of the constraint will apply.
+Constraints can be repeated, and when they are, all instances of the constraint will apply.
 
 {% comment %}{% include example.md title="Repeated constraints" code_file="examples/placeholder.isl" %}{% endcomment %}
 
 Generally speaking, constraints must reject null values as invalid.
 For example, the precision and scale constraints must reject a null value, as `null` does not have a precision or scale to evaluate.
-The `fields` constraint must reject `null.struct`, as `null.struct` doesn't have a collection of fields.
+The `fields` constraint must reject `null.struct`, as `null.struct` does not have a collection of fields.
 Similar reasoning applies to the expected handling of null values by most constraints.
 The `contains`, `annotations`, `valid_values`, and type-algebra constraints are exceptions to this, as these constraints may be defined such that a null value is valid.
 
@@ -216,9 +215,8 @@ Some constraints can be defined by a range.
 A range is represented by a list annotated with `range`, and containing two values, in order: the minimum and maximum ends of the range.
 The default behavior is for both ends of the range to be *inclusive*; 
 if *exclusive* behavior is desired, the minimum or maximum (or both) values shall be annotated with `exclusive`.
-If the minimum or maximum end of a range is to be unspecified, this shall be represented by the symbols `min` or `max`, respectively; 
-the `exclusive`annotation is not applicable when the symbols `min` or `max` are specified.
-A range may not contain both `min` and `max`.
+If the minimum or maximum end of a range is to be unspecified, this shall be represented by the symbols `min` or `max`, respectively. 
+The symbols `min` and `max` may not be annotated with `exclusive`, and a range may not contain both `min` and `max`.
 
 All ranges have a type.
 The type of the range is the same as that of the minimum and/or maximum values specified in the range list. 
@@ -318,7 +316,7 @@ The value must match any of the specified types. The list of types must not be e
 {% include grammar-element.md productions="byte_length" %}
 
 The exact or minimum/maximum number of bytes in a blob or clob.
-Note that this constrains the number of bytes in the blob or clob _value_, which may differ from the number of bytes needed to serialize the blob/clob.
+Note that this constrains the number of bytes in the blob or clob _value_, which differs from the number of bytes needed to serialize the blob/clob.
 <!-- Note: we need to use liquid tags to escape the double '{' in the following lines because otherwise these will be processed as a liquid tag. The escape code &#123; does not work because it's between backticks, which gets rendered into a <pre></pre>. /-->
 For example, the clob `{{"{{"}}"hello"}}` has a `byte_length` of 5 bytes, but the actual number of bytes in the serialized representation is 11 bytes.
 The same clob value, could also be encoded as `{{"{{"}} '''hello''' }}`, and it would still have a `byte_length` of 5 bytes, but the actual number of bytes in the serialized representation is now 17 bytes.
@@ -334,8 +332,7 @@ Rather, they have no length at all, and are always invalid for this constraint.
 
 The exact or minimum/maximum number of Unicode codepoints in a string or symbol.
 Note that characters are a complex topic in Unicode, whereas codepoints provide an unambiguous unit for constraining the length of a string or symbol.
-The values `null.string` and `null.symbol` do not have a length of 0.
-Rather, they have no length at all, and are always invalid for this constraint.
+The values `null.string` and `null.symbol` do not have a sequence of codepoints, and are always invalid for this constraint.
 
 {% comment %}{% include example.md title="`codepoint_length` exact" code_file="examples/placeholder.isl" %}{% endcomment %}
 {% comment %}{% include example.md title="`codepoint_length` range" code_file="examples/placeholder.isl" %}{% endcomment %}
@@ -379,7 +376,10 @@ For the purpose of this constraint, the comparison of the values (including any 
 
 {% include grammar-element.md productions="exponent" %}
 
-This constraint specifies an exact or minimum/maximum range indicating the exponent of the Ion decimal.
+This constraint specifies an exact or minimum/maximum range indicating the exponent of an Ion decimal.
+The exponent of an Ion decimal is determined from the [decimal data model](https://amzn.github.io/ion-docs/docs/decimal.html#data-model) rather than the serialized text or binary form.
+For example, the text of `1.23`, `123d-2`, and `0.123d1` are different, but using the decimal data model, they all have the same coefficient (`123`) and exponent (`-2`).
+
 Remember that decimal values with digits after the decimal point have a _negative_ exponent, so to require at least two digits after the decimal point, you must specify `exponent: range::[min, -2]`.
 
 {% include note.html type="tip" content="See [Modeling SQL Decimals](../cookbook/sql-decimals.md) to learn how `exponent` relates to the concept of _scale_." %} 
@@ -399,8 +399,8 @@ To convert a from `scale` to `exponent`, simply multiply a single argument by -1
 Applicable for `struct` values.
 
 The field_names constraint defines the type and/or constraints for all field names within a struct.
-Field names are symbols and will be represented as symbol values for the purpose of validation.
-Any value that is not a struct as well as `null.struct` will always be invalid for this constraint.
+Field names are symbol tokens and will be represented as symbol values for the purpose of validation.
+Any value that is not a struct, as well as `null.struct`, will always be invalid for this constraint.
 
 {% comment %}{% include example.md title="Limiting the length of field names" code_file="examples/placeholder.isl" %}{% endcomment %}
 {% comment %}{% include example.md title="Limiting the characters used in field names" code_file="examples/placeholder.isl" %}{% endcomment %}
@@ -568,9 +568,14 @@ Indicates the type that a value shall be validated against.
 
 {% include grammar-element.md productions="utf8_byte_length" %}
 
-An exact or minimum/maximum indicating number of bytes in the [UTF-8](https://en.wikipedia.org/wiki/UTF-8) representation of a string or symbol.
-The values `null.string` and `null.symbol` do not have a length of 0.
-Rather, they have no length at all, and are always invalid for this constraint.
+An exact or minimum/maximum indicating number of bytes in the [UTF-8](https://en.wikipedia.org/wiki/UTF-8) encoding of a string or symbol.
+The values `null.string` and `null.symbol` have no UTF-8 encoding and are always invalid for this constraint.
+
+{% include note.html type="tip" content="
+Use `codepoint_length` to constraint the logical size of the text data.
+Use `utf8_byte_length` to constrain the physical size of the text encoding.
+For text that is guaranteed to contain only ASCII code points, `utf8_byte_length` and `codepoint_length` can be used interchangeably since each ASCII code point is represented by a single UTF-8 code unit.
+" %}
 
 {% comment %}{% include example.md title="`utf8_byte_length`" code_file="examples/placeholder.isl" %}{% endcomment %}
 
@@ -615,7 +620,7 @@ The value `null.timestamp` is never in the bounds of a timestamp range, and `tim
 
 {% include grammar-element.md productions="user_content_declaration,user_content_declaration_field" %}
 
-The Ion Schema 2.0 specification allows users to insert additional content into a schema document that is not part of the Ion Schema Language.
+The Ion Schema 2.0 specification allows users to insert additional content that is not part of the Ion Schema language into a schema document.
 This additional content may be used for documentation, integrations with other tools or frameworks, or any other desired purpose.
 
 A schema header, type definition, or schema footer may include extra fields that are not explicitly stated in the Ion Schema specification.
@@ -653,7 +658,7 @@ schema_footer::{}
 
 An Ion Schema MAY include extra top-level values that are not explicitly specified in the Ion Schema specification, but any top-level open content MUST NOT be annotated with a *reserved symbol*.
 Top-level open content may appear before, after, or in between the Ion Schema version marker, header, types, and footer.
-Note that Ion Schema version markers are always interpreted as Ion Schema version markers and can never be valid open content.
+Note that a top-level symbol value with the same text as an Ion schema version marker is always interpreted as an Ion Schema version marker and can never be valid open content.
 
 {% capture sample_code %}
 ```ion
