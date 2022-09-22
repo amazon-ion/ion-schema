@@ -1,26 +1,38 @@
 import init, {validate} from "./wasm_ion_schema.js";
 const validateButton = document.getElementById("validate");
+const shareButton = document.getElementById("share");
 function loadPage() {
-    document.getElementById("schema_type").setAttribute("placeholder", "e.g. my_type");
-    document.getElementById("schema_type").value = "short_string";
+    // Default values for populating the input fields
+    let schemaInputValue = "type::{\n  name: short_string,\n  type: string,\n  codepoint_length: range::[1, 10],\n}";
+    let valueInputValue = "\"Hello World!\"";
+    let schemaTypeInputValue = "short_string"
 
-    const schemaEditor = ace.edit("schema");
-    schemaEditor.setOptions({
+    const params = new Proxy(new URLSearchParams(window.location.search), {
+        get: (searchParams, prop) => searchParams.get(prop),
+    });
+
+    // If there are any query params in the URL, then use those and skip all the default values
+    if (params.schema || params.value || params.type) {
+        schemaInputValue = params.schema ?? "";
+        valueInputValue = params.value ?? "";
+        schemaTypeInputValue = params.type ?? "";
+    }
+
+    ace.edit("schema").setOptions({
         mode: 'ace/mode/ion',
         theme: 'ace/theme/cloud9_day',
         showPrintMargin: false,
         tabSize: 2,
-        value: "type::{\n  name: short_string,\n  type: string,\n  codepoint_length: range::[1, 10],\n}",
+        value: schemaInputValue,
     });
-
-    const valueEditor = ace.edit("value");
-    valueEditor.setOptions({
+    ace.edit("value").setOptions({
         mode: 'ace/mode/ion',
         theme: 'ace/theme/cloud9_day',
         showPrintMargin: false,
         tabSize: 2,
-        value: "\"Hello World!\"",
+        value: valueInputValue,
     });
+    document.getElementById("schema_type").value = schemaTypeInputValue;
 }
 
 loadPage();
@@ -65,6 +77,19 @@ const show = () => {
         });
 };
 
-validateButton.addEventListener("click", event => {
-    show()
-});
+validateButton.addEventListener("click", show);
+
+const copyUrl = () => {
+    let url = window.location.href.split('?')[0]
+        + `?schema=${encodeURIComponent(ace.edit("schema").getValue())}`
+        + `&value=${encodeURIComponent(ace.edit("value").getValue())}`
+        + `&type=${encodeURIComponent(document.getElementById('schema_type').value)}`;
+    let x = document.getElementById("snackbar");
+    x.innerText = "Copied to clipboard"
+    x.classList.add("show");
+    // CSS fadeout is set with a delay of 2.5 seconds and an animation time of 0.5 seconds. Timeout here
+    // is slightly shorter than 3s to avoid a race condition and have the box flash before vanishing again.
+    setTimeout(function(){ x.classList.remove("show"); }, 2995);
+    return navigator.clipboard.writeText(url);
+};
+shareButton.addEventListener("click", copyUrl);
