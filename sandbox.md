@@ -20,7 +20,7 @@ Enter a single Ion value.
 <label for="schema_type">Validate as </label>
 <input type="text" id="schema_type" placeholder="e.g. my_type" name="schema_type" size="15"/>
 <button id="validate" type="submit">Go</button>
-<button id="share" type="submit" title="Share a link to your schema" style="float: right;"><i class="fa fa-share-alt" aria-hidden="true"></i></button>
+<button id="share" type="submit" title="Share a link to your schema" style="float: right;"><i class="fa fa-share-square-o" aria-hidden="true"></i></button>
 
 <div id="resultdiv" class="bs-callout bs-callout-default">
 <h4 id="result"></h4>
