@@ -583,7 +583,7 @@ For text that is guaranteed to contain only ASCII code points, `utf8_byte_length
 
 {% include grammar-element.md productions="valid_values,value_or_range,number_range,timestamp_range" %}
 
-A list of acceptable, non-annotated values; any values not present in the list are invalid.
+A list of acceptable values or ranges of values; any values not present in the list (or range) are invalid.
 The argument to this constraint can be a range or a list of unannotated values or a list containing a mix of ranges and unannotated values.
 
 Ignoring annotations, the value must match one of the list of valid values or be within the boundaries of a range.
