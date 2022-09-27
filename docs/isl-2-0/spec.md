@@ -191,6 +191,26 @@ The field `occurs` is never allowed in a `NAMED_TYPE_DEFINITION`.
 The `occurs` field is optional.
 Each constraint that accepts a variably-occurring type reference specifies what the default `occurs` value is for that constraint. 
 
+It is permitted to use a nullable type reference wherever a variably-occurring type reference is accepted.
+However, the `$null_or` annotation may not be applied to any variably-occurring type with an explicit `occurs` field.
+
+{% include example.md title="Correct ways to construct a variably-occurring, nullable type" markdown="
+```ion
+type::{
+  name: foo,
+  ordered_elements:[
+    // These are all valid
+    $null_or::decimal,
+    $null_or::{ codepoint_length: 5 },
+    $null_or::{ id: "bar_schema.isl", type: bar_type },
+    { type: $null_or::int, occurs: 3 },
+    // This is not permitted
+    // $null_or::{ type: int, occurs: 3 },
+  ]
+}
+```
+" %}
+
 # Constraints
 
 Constraints are the fundamental building blocks of types.
@@ -247,7 +267,9 @@ type::{
 {% include grammar-element.md productions="annotations,annotations_modifier" %}
 
 Restricts the allowed annotations on a value.
-Applicable to all types except `document` (since documents cannot be annotated).
+Applicable to all types except `document`.
+A `document` does not have a list of annotations (not even an empty list); therefore, a `document` must always be rejected by the `annotations` constraint.
+
 This constraint has two available syntaxes.
 The "Standard" syntax is very expressive, but can be verbose for simple use cases.
 The "Simple" syntax is based on the Ion Schema 1.0 `annotations` syntax, and is concise, but only supports a limited set of use cases.
