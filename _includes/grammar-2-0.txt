@@ -6,7 +6,7 @@
 <HEADER> ::= schema_header::{ <HEADER_FIELD>... }
 
 <HEADER_FIELD> ::= <IMPORTS_DECLARATION>
-                 | <USER_CONTENT_DECLARATION>
+                 | <USER_FIELDS_DECLARATION>
 
 <IMPORTS_DECLARATION> ::= imports: [ <IMPORT>... ],
 
@@ -20,11 +20,11 @@
 
 <IMPORT_TYPE_ALIAS> ::= { id: <SCHEMA_ID>, type: <TYPE_NAME>, as: <TYPE_NAME> }
 
-<USER_CONTENT_DECLARATION> ::= user_content: { <USER_CONTENT_DECLARATION_FIELD>... }
+<USER_FIELDS_DECLARATION> ::= user_fields: { <USER_FIELDS_DECLARATION_FIELD>... }
 
-<USER_CONTENT_DECLARATION_FIELD> ::= schema_header: [ <SYMBOL>... ],
-                                   | type: [ <SYMBOL>... ],
-                                   | schema_footer: [ <SYMBOL>... ],
+<USER_FIELDS_DECLARATION_FIELD> ::= schema_header: [ <SYMBOL>... ],
+                                  | type: [ <SYMBOL>... ],
+                                  | schema_footer: [ <SYMBOL>... ],
 
 <FOOTER> ::= schema_footer::{ }
 
