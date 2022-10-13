@@ -194,7 +194,7 @@ Each constraint that accepts a variably-occurring type reference specifies what 
 It is permitted to use a nullable type reference wherever a variably-occurring type reference is accepted.
 However, the `$null_or` annotation may not be applied to any variably-occurring type with an explicit `occurs` field.
 
-{% include example.md title="Correct ways to construct a variably-occurring, nullable type" markdown="
+{% include example.md title="Correct ways to construct a variably-occurring, nullable type" markdown='
 ```ion
 type::{
   name: foo,
@@ -209,7 +209,7 @@ type::{
   ]
 }
 ```
-" %}
+' %}
 
 # Constraints
 
