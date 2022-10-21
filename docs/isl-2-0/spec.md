@@ -35,7 +35,7 @@ A schema is a collection of types that can be used to constrain the Ion data mod
 
 A schema consists of a schema version marker `$ion_schema_2_0` followed by an optional schema header, zero or more type definitions, and an optional schema footer.
 The schema header is a struct, annotated with `schema_header`, with an optional `imports` field for leveraging types from other schemas.
-The schema header may also have an optional `user_fields` field that is used to declared reserved symbols that are to be used for open content fields.
+The schema header may also have an optional `user_reserved_fields` field that is used to declared reserved symbols that are to be used for open content fields.
 The schema footer is a struct that it annotated with `schema_footer`.
 While a header and footer are both optional, a footer is required if a header is present (and vice-versa).
 A schema may not have more than one header or more than one footer.
@@ -640,21 +640,21 @@ The value `null.timestamp` is never in the bounds of a timestamp range, and `tim
 
 # Open Content
 
-{% include grammar-element.md productions="user_fields_declaration,user_fields_declaration_field" %}
+{% include grammar-element.md productions="user_reserved_fields_declaration,user_reserved_fields_declaration_field" %}
 
 The Ion Schema 2.0 specification allows users to insert additional content that is not part of the Ion Schema language into a schema document.
 This additional content may be used for documentation, integrations with other tools or frameworks, or any other desired purpose.
 
 A schema header, type definition, or schema footer may include extra fields that are not explicitly stated in the Ion Schema specification.
 These extra fields may have any field name that is not a *keyword*.
-If the field name is a *reserved symbol*, its use as open content must be declared in the appropriate subfield of the `user_fields` field in the schema header.
-For example, the reserved symbol `list_type` may be used in a type definition if `user_fields: { type: [ list_type ] }` is present in the schema header.
+If the field name is a *reserved symbol*, its use as open content must be declared in the appropriate subfield of the `user_reserved_fields` field in the schema header.
+For example, the reserved symbol `list_type` may be used in a type definition if `user_reserved_fields: { type: [ list_type ] }` is present in the schema header.
 
 {% capture sample_code %}
 ```ion
 schema_header::{
   info: "This schema is about penguins.",
-  user_fields: {
+  user_reserved_fields: {
     schema_header: [info],
     type: [region, crested, banded],
   }
@@ -774,7 +774,7 @@ schema_header
 timestamp_offset
 timestamp_precision
 type
-user_fields
+user_reserved_fields
 utf8_byte_length
 valid_values
 ```
