@@ -89,7 +89,7 @@ A keyword is a reserved symbol that has been assigned a meaning by the Ion Schem
 Whether a reserved symbol is considered a keyword is context dependent.
 
 * Within a type definition, the keywords SHALL be `name`, `occurs`, and `id` , as well as all the constraints defined in this version of the Ion Schema specification.
-* Within the schema header, the keywords SHALL be `imports` and `user_content`.
+* Within the schema header, the keywords SHALL be `imports` and `user_reserved_fields`.
 * There are no keywords in a schema footer.
 
 ### Open Content in Ion Schema Language Structures
@@ -124,10 +124,10 @@ schema_header::{
   imports: [
     // ...
   ],
-  // This is valid open content even though the `user_content` struct comes "after" 
+  // This is valid open content even though the `user_reserved_fields` struct comes "after" 
   // it because structs are unordered.
   foo: 1,
-  user_content: {
+  user_reserved_fields: {
     schema_header: [
       // foo is only available in the header
       foo,
@@ -233,7 +233,7 @@ schema_header::aardvark::{ // Illegal extra annotation 'aardvark'
     // Illegal field 'stripes' in an import
     { id: 'mammals/felines/tigers.isl' stripes: true },
   ],
-  user_content: {
+  user_reserved_fields: {
     type: [
       tarsir
     ]
@@ -323,7 +323,7 @@ Certain keywords will cause problems when name-shadowed by user content.
 
 * **`id` in a type definition**. This could cause an inline type to be indistinguishable from an inline import in some cases
 * **`name` in a type definition**. Needs to occur only once, unless we want to start allowing this as a way to provide multiple names for a type. (Actually, that is not a terrible idea.) Even if you override this, however, top-level types still need a name—where would it come from? All top-level types must have a name in order for a schema to be valid.
-* **`user_content` in schema header**. Overriding `user_content` leads to a paradox because the implementation cannot know that `user_content` is name-shadowed until reading the `user_content` field with its original semantics, but if `user_content` is overridden, then it cannot be used to define overrides.
+* **`user_reserved_fields` in schema header**. Overriding `user_reserved_fields` leads to a paradox because the implementation cannot know that `user_reserved_fields` is name-shadowed until reading the `user_reserved_fields` field with its original semantics, but if `user_reserved_fields` is overridden, then it cannot be used to define overrides.
 * **`occurs` in a type definition**. If overridden, does everything always have the default `occurs` value? It is probably a bad idea, but it is technically possible.
 
 
@@ -335,19 +335,19 @@ Custom constraints theoretically *could* use `id`, but there is a potential to b
 
 Allowing `name` and `id` to be used for custom constraints adds complexity to implementations and introduces edge cases that make the ISL rules more difficult for the developer to understand. Since there is no immediate use case for allowing `name` or `id` to be name-shadowed by a custom constraint, it seems like the simpler solution is to not allow these fields for open content. It would be a backwards compatible change if we decided, in a future version of ISL, to allow shadowing of `name` or `id`.
 
-There is no clear mitigation for the paradox of name-shadowing `user_content` in the header.
+There is no clear mitigation for the paradox of name-shadowing `user_reserved_fields` in the header.
 
 Each of these mitigations adds non-trivial amounts of implementation complexity and cognitive burden for Ion Schema users, so this was deemed unacceptable as a solution.
 
 **Special classes of keywords**
 
-Another alternative was to allow some keywords to be overridden, but not others. The keywords `id`, `name`, `user_content`, and `type` were proposed, but it was impossible to come up with a logical way to divide up those keywords that can be name-shadowed, and those that cannot. If `type` is special, and cannot be name-shadowed, then so should its complement `not`. If both `type` and `not`, then so should all the algebraic and aggregation constraints—`all_of`, `any_of`, `one_of`, `element`, `fields`, and `ordered_elements`. This creates a slippery slope situation where it becomes increasingly untenable to argue that any known (as of Ion Schema 2.0) keyword should be allowed to be overridden.
+Another alternative was to allow some keywords to be overridden, but not others. The keywords `id`, `name`, `user_reserved_fields`, and `type` were proposed, but it was impossible to come up with a logical way to divide up those keywords that can be name-shadowed, and those that cannot. If `type` is special, and cannot be name-shadowed, then so should its complement `not`. If both `type` and `not`, then so should all the algebraic and aggregation constraints—`all_of`, `any_of`, `one_of`, `element`, `fields`, and `ordered_elements`. This creates a slippery slope situation where it becomes increasingly untenable to argue that any known (as of Ion Schema 2.0) keyword should be allowed to be overridden.
 
 Therefore, it was deemed simplest to prohibit name-shadowing of any Ion Schema 2.0 keyword. This is a two-way door decision, as we can easily allow it in a future minor version if a use case arises. On the other hand, allowing name-shadowing of Ion Schema 2.0 keywords would be a (relatively speaking) one-way door decision, since taking away that capability would require a new major version on Ion Schema.
 
 ### Designate a specific field for user content, and do not allow anywhere else
 
-Rather than allowing arbitrary user keys inside type definition structs, we could define a single field for user-defined content. A straw-man proposal for such a field would be `user_content`. This field could appear any number of times and have any value of any type. The biggest reason for this approach is that it is easier to implement because the schema system would not need to check the field names against a regex to determine whether a field is user content or not—there is only ever one field name for user content.
+Rather than allowing arbitrary user keys inside type definition structs, we could define a single field for user-defined content. A straw-man proposal for such a field would be `user_reserved_fields`. This field could appear any number of times and have any value of any type. The biggest reason for this approach is that it is easier to implement because the schema system would not need to check the field names against a regex to determine whether a field is user content or not—there is only ever one field name for user content.
 
 Ultimately, this was rejected as being too restrictive for users of Ion Schema with no actual benefit for implementations because the proposal for custom constraints would require arbitrary fields in a type definition anyway.
 
@@ -457,7 +457,7 @@ This has been deemed out of scope for Ion Schema 2.0, but in a future version, i
 $ion_schema_2_0
 schema_header::{
   imports: [
-    user_content::{ id: foo }, // Imports the user content words defined in foo
+    user_reserved_fields::{ id: foo }, // Imports the user content words defined in foo
     { id: foo, type: bar}
   ]
 }
