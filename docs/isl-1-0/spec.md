@@ -1191,6 +1191,8 @@ The following schema provides an example of using the 'document' type,
 and illustrates what the schema for ISL might look like.
 
 ```
+$ion_schema_1_0
+
 schema_header::{
 }
 
@@ -1198,10 +1200,16 @@ type::{
   name: IonSchema,
   type: document,
   ordered_elements: [
+    { type: SchemaVersionMarker, occurs: required },
     { type: Header, occurs: optional },
     { type: Type,   occurs: range::[0, max] },
     { type: Footer, occurs: optional },
   ],
+}
+
+type::{
+  name: SchemaVersionMarker,
+  valid_values: [$ion_schema_1_0, $ion_schema_2_0]
 }
 
 type::{
@@ -1210,13 +1218,12 @@ type::{
   annotations: [required::schema_header],
   fields: {
     imports: ImportList,
-  },
+  }
 }
 
 type::{
   name: ImportList,
-  type: list,
-  ...
+  type: list
 }
 
 type::{
@@ -1225,7 +1232,6 @@ type::{
   annotations: [required::type],
   fields: {
     name: symbol,
-    ...
   },
 }
 
