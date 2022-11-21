@@ -1209,7 +1209,7 @@ type::{
 
 type::{
   name: SchemaVersionMarker,
-  valid_values: [$ion_schema_1_0, $ion_schema_2_0]
+  valid_values: [$ion_schema_1_0]
 }
 
 type::{
@@ -1223,7 +1223,8 @@ type::{
 
 type::{
   name: ImportList,
-  type: list
+  type: list,
+  // ... etc. etc. 
 }
 
 type::{
@@ -1232,6 +1233,7 @@ type::{
   annotations: [required::type],
   fields: {
     name: symbol,
+    // ... etc. etc.
   },
 }
 
