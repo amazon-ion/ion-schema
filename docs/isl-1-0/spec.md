@@ -1200,7 +1200,7 @@ type::{
   name: IonSchema,
   type: document,
   ordered_elements: [
-    { type: SchemaVersionMarker, occurs: required },
+    { type: SchemaVersionMarker, occurs: optional },
     { type: Header, occurs: optional },
     { type: Type,   occurs: range::[0, max] },
     { type: Footer, occurs: optional },
