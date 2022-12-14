@@ -2,7 +2,7 @@
 title:  Optionally ignoring the occurs requirement for fields
 ---
 # {{ page.title }}
-_(Applies to Ion Schema 1.0.)_
+_(Applies to Ion Schema 1.0 and Ion Schema 2.0. Example code uses Ion Schema 2.0.)_
 
 Suppose you have a type definition for a struct, and sometimes you want to validate the fields without enforcing the
 required-ness of fields. (A possible use case for this is to perform partial validation on a partially constructed
@@ -16,7 +16,7 @@ Here is an example using a `Customer` type:
 ```ion
 type::{
   name: CustomerFieldTypes,
-  fields: {
+  fields: closed::{
     title: { valid_values: ["Dr.", "Mr.", "Mrs.", "Ms."] },
     firstName: string,
     middleName: string,
@@ -32,7 +32,6 @@ type::{
     addresses: { type: list, element: Address },
     lastUpdated: { timestamp_precision: second },
   },
-  content: closed,
 }
 
 type::{

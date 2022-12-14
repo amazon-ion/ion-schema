@@ -2,7 +2,8 @@
 title:  Modeling SQL Decimals in Ion Schema
 ---
 # {{ page.title }}
-_(Applies to Ion Schema 1.0.)_
+_(Applies to Ion Schema 1.0 and Ion Schema 2.0.
+Example code uses Ion Schema 2.0; for Ion Schema 1.0, replace `exponent` with `scale` and negate the argument.)_
 
 Ion `decimal` and SQL `DECIMAL` have some fundamental differences that make it complex to compare values between the two types.
 
@@ -14,12 +15,20 @@ Therefore, the precision of the number `12.34` is not determined by the actual n
 by the data type it is assigned. `12.34` can be assigned to `DECIMAL(38,2)` just as easily as `DECIMAL(4,2)`. That is to
 say, precision and scale are a property of the `DECIMAL` data _type_ rather than being inherent in the value.
 
-On the other hand, the Ion decimal data type has no particular precision or scale as it is an _arbitrary precision_ data
-type—the precision and scale of an Ion decimal value are inherent in the value itself.
+On the other hand, the [Ion decimal](https://amzn.github.io/ion-docs/docs/decimal.html) data type has an _exponent_ property instead of a scale property.
+Because an Ion decimal can have more than one encoding, the value of the exponent property is actually the _adjusted exponent_ as defined in the [IBM Hursley Lab General Decimal Arithmetic Specification](https://speleotrove.com/decimal/damodel.html):
+
+> The _adjusted exponent_ is the value of the exponent of a number when that number is expressed as though in scientific notation with one digit (non-zero unless the coefficient is 0) before any decimal point.
+> This is given by the value of the `exponent+(clength–1)`, where `clength` is the length of the coefficient in decimal digits.
+
+For example, the adjusted exponent of the values `0.00123d2` and `0.123d0` is the exponent of the adjusted form, `1.23d-1`.
+Informally, the exponent property is like the negation of scale, except that positive and negative numbers are valid exponents, but scale may only be non-negative.
+Finally, the Ion decimal _data type_ has no particular precision or exponent as it is an _arbitrary precision_ data type.
+Instead, the precision and exponent of an Ion decimal value are inherent in the value itself.
 
 As a result of these differences, when converting a value from a SQL `DECIMAL` to an Ion `decimal`, it is _possible_ to
 preserve the scale of the `DECIMAL` (as it becomes the exponent of the Ion decimal, multiplied by -1), but the precision
-is lost. When converting from an Ion `decimal` to a `DECIMAL(p,s)`, the precision and scale of the Ion value are always
+is lost. When converting from an Ion `decimal` to a `DECIMAL(p,s)`, the precision and exponent of the Ion value are always
 lost because the value is converted into having the precision and scale of `DECIMAL(p,s)`.
 
 That being said, here are some questions that one might be trying to answer by modeling SQL `DECIMAL` and how to approach
@@ -34,7 +43,7 @@ Using `DECIMAL(5,2)` as our example, we can model an _exact_ precision and scale
 ```
 type::{
   precision: 5,
-  scale: 2,
+  exponent: -2,
 }
 ```
 This will only allow `decimal`s with 5 digits, and two after the decimal point. However, this will not accept valid
@@ -54,7 +63,7 @@ Using `DECIMAL(5,2)` as our example, we can model a _compatible_ precision and _
 ```
 type::{
   precision: range::[min, 5],
-  scale: 2,
+  exponent: -2,
 }
 ```
 This will accept values such as `100.00`, `1.50`, and `0.01`. It will reject values such as `100`, `1.5`, `0.010`, and `1000.0`.
@@ -74,8 +83,8 @@ This can be separated into two parts:
 Using `DECIMAL(5,2)` as our example again, we can model a _compatible_ precision and scale like this:
 ```
 type::{
-  scale: [min, 2],
-  // Scale is not fixed, so we cannot use the `precision` constraint. Must use `valid_values` instead.
+  exponent: [-2, max],
+  // Exponent is not fixed, so we cannot use the `precision` constraint. Must use `valid_values` instead.
   valid_values: range::[ -999.99, 999.99 ],
 }
 ```
