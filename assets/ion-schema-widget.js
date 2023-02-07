@@ -3,12 +3,7 @@ const validateButton = document.getElementById("validate");
 const shareButton = document.getElementById("share");
 const dropDownSelection = document.getElementById("examples");
 
-function loadPage() {
-    // Default values for populating the input fields
-    let schemaInputValue = "type::{\n  name: short_string,\n  type: string,\n  codepoint_length: range::[1, 10],\n}";
-    let valueInputValue = "\"Hello World!\"";
-    let schemaTypeInputValue = "short_string"
-
+function loadPage(schemaInputValue, valueInputValue, schemaTypeInputValue) {
     const params = new Proxy(new URLSearchParams(window.location.search), {
         get: (searchParams, prop) => searchParams.get(prop),
     });
@@ -35,9 +30,18 @@ function loadPage() {
         value: valueInputValue,
     });
     document.getElementById("schema_type").value = schemaTypeInputValue;
+
+
+    // clear any previous validation results
+    const pre = document.getElementById('result');
+    const resultDiv = document.getElementById('resultdiv');
+    const violation = document.getElementById('violation');
+    pre.textContent = "";
+    violation.textContent = "";
+    _set_output_style(resultDiv, "primary")
 }
 
-loadPage();
+loadPage("type::{\n  name: short_string,\n  type: string,\n  codepoint_length: range::[1, 10],\n}", "\"Hello World!\"", "short_string");
 
 function _set_output_style(resultDiv, styleName) {
     var toRemove = [];
@@ -105,41 +109,7 @@ dropDownSelection.onchange = function() {
         let valueInputValue = "\"Hello World!\"";
         let schemaTypeInputValue = "short_string"
 
-        const params = new Proxy(new URLSearchParams(window.location.search), {
-            get: (searchParams, prop) => searchParams.get(prop),
-        });
-
-        // If there are any query params in the URL, then use those and skip all the default values
-        if (params.schema || params.value || params.type) {
-            schemaInputValue = params.schema ?? "";
-            valueInputValue = params.value ?? "";
-            schemaTypeInputValue = params.type ?? "";
-        }
-
-        ace.edit("schema").setOptions({
-            mode: 'ace/mode/ion',
-            theme: 'ace/theme/cloud9_day',
-            showPrintMargin: false,
-            tabSize: 2,
-            value: schemaInputValue,
-        });
-        ace.edit("value").setOptions({
-            mode: 'ace/mode/ion',
-            theme: 'ace/theme/cloud9_day',
-            showPrintMargin: false,
-            tabSize: 2,
-            value: valueInputValue,
-        });
-        document.getElementById("schema_type").value = schemaTypeInputValue;
-
-        // clear previous validation results
-        const pre = document.getElementById('result');
-        const resultDiv = document.getElementById('resultdiv');
-        const violation = document.getElementById('violation');
-        pre.textContent = "";
-        violation.textContent = "";
-        _set_output_style(resultDiv, "primary")
-
+        loadPage(schemaInputValue, valueInputValue, schemaTypeInputValue)
     } else if (value === "typeDefinitionWithFields") {
         // Default values for populating the input fields
         let schemaInputValue = "type::{\n" +
@@ -159,40 +129,7 @@ dropDownSelection.onchange = function() {
             " }";
         let schemaTypeInputValue = "customer"
 
-        const params = new Proxy(new URLSearchParams(window.location.search), {
-            get: (searchParams, prop) => searchParams.get(prop),
-        });
-
-        // If there are any query params in the URL, then use those and skip all the default values
-        if (params.schema || params.value || params.type) {
-            schemaInputValue = params.schema ?? "";
-            valueInputValue = params.value ?? "";
-            schemaTypeInputValue = params.type ?? "";
-        }
-
-        ace.edit("schema").setOptions({
-            mode: 'ace/mode/ion',
-            theme: 'ace/theme/cloud9_day',
-            showPrintMargin: false,
-            tabSize: 2,
-            value: schemaInputValue,
-        });
-        ace.edit("value").setOptions({
-            mode: 'ace/mode/ion',
-            theme: 'ace/theme/cloud9_day',
-            showPrintMargin: false,
-            tabSize: 2,
-            value: valueInputValue,
-        });
-        document.getElementById("schema_type").value = schemaTypeInputValue;
-
-        // clear previous validation results
-        const pre = document.getElementById('result');
-        const resultDiv = document.getElementById('resultdiv');
-        const violation = document.getElementById('violation');
-        pre.textContent = "";
-        violation.textContent = "";
-        _set_output_style(resultDiv, "primary")
+        loadPage(schemaInputValue, valueInputValue, schemaTypeInputValue)
     } else if (value === "typeDefinitionWithLogicConstraints") {
         // Default values for populating the input fields
         let schemaInputValue = "type::{\n" +
@@ -206,39 +143,6 @@ dropDownSelection.onchange = function() {
         let valueInputValue = "hi";
         let schemaTypeInputValue = "any_of_core_types"
 
-        const params = new Proxy(new URLSearchParams(window.location.search), {
-            get: (searchParams, prop) => searchParams.get(prop),
-        });
-
-        // If there are any query params in the URL, then use those and skip all the default values
-        if (params.schema || params.value || params.type) {
-            schemaInputValue = params.schema ?? "";
-            valueInputValue = params.value ?? "";
-            schemaTypeInputValue = params.type ?? "";
-        }
-
-        ace.edit("schema").setOptions({
-            mode: 'ace/mode/ion',
-            theme: 'ace/theme/cloud9_day',
-            showPrintMargin: false,
-            tabSize: 2,
-            value: schemaInputValue,
-        });
-        ace.edit("value").setOptions({
-            mode: 'ace/mode/ion',
-            theme: 'ace/theme/cloud9_day',
-            showPrintMargin: false,
-            tabSize: 2,
-            value: valueInputValue,
-        });
-        document.getElementById("schema_type").value = schemaTypeInputValue;
-
-        // clear previous validation results
-        const pre = document.getElementById('result');
-        const resultDiv = document.getElementById('resultdiv');
-        const violation = document.getElementById('violation');
-        pre.textContent = "";
-        violation.textContent = "";
-        _set_output_style(resultDiv, "primary")
+        loadPage(schemaInputValue, valueInputValue, schemaTypeInputValue)
     }
 };
