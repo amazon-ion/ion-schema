@@ -9,6 +9,15 @@ title: Give Ion Schema a Try!
 {% include note.html type="note" content="This sandbox uses `ion-schema-rust` (pre-release version) to validate Ion value using given schema" %}
 
 <label for="schema"></label>
+
+Predefined examples:  
+
+<select name="examples" id="examples">
+  <option value="simpleTypeDefinition">Simple Type Definition</option>
+  <option value="typeDefinitionWithFields">Type Definition with fields</option>
+  <option value="typeDefinitionWithLogicConstraints">Type Definition with logic constraint</option>
+</select>
+
 Enter one or more type definitions. No Authority is configured, so imports are not available.
 <div id="schema" class="bs-callout bs-callout-primary"></div>
 
