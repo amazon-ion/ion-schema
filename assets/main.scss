@@ -74,6 +74,23 @@ button:focus {
   border-left: 0px;
   background-color: $background-color;
 }
+select {
+  position: absolute;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+}
+option {
+  display: block;
+  position: absolute;
+  background-color: #f9f9f9;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+}
 
 // whiteglass also includes a mixin for defining media queries.
 // Use media queries like this:

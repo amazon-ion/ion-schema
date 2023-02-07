@@ -1,12 +1,9 @@
 import init, {validate} from "./wasm_ion_schema.js";
 const validateButton = document.getElementById("validate");
 const shareButton = document.getElementById("share");
-function loadPage() {
-    // Default values for populating the input fields
-    let schemaInputValue = "type::{\n  name: short_string,\n  type: string,\n  codepoint_length: range::[1, 10],\n}";
-    let valueInputValue = "\"Hello World!\"";
-    let schemaTypeInputValue = "short_string"
+const dropDownSelection = document.getElementById("examples");
 
+function loadPage(schemaInputValue, valueInputValue, schemaTypeInputValue) {
     const params = new Proxy(new URLSearchParams(window.location.search), {
         get: (searchParams, prop) => searchParams.get(prop),
     });
@@ -33,9 +30,24 @@ function loadPage() {
         value: valueInputValue,
     });
     document.getElementById("schema_type").value = schemaTypeInputValue;
+
+
+    // clear any previous validation results
+    const pre = document.getElementById('result');
+    const resultDiv = document.getElementById('resultdiv');
+    const violation = document.getElementById('violation');
+    pre.textContent = "";
+    violation.textContent = "";
+    _set_output_style(resultDiv, "primary")
 }
 
-loadPage();
+loadPage("type::{\n" +
+    "  name: short_string,\n" +
+    "  type: string,\n" +
+    "  codepoint_length: range::[1, 10],\n" +
+    "}",
+    "\"Hello World!\"",
+    "short_string");
 
 function _set_output_style(resultDiv, styleName) {
     var toRemove = [];
@@ -93,3 +105,54 @@ const copyUrl = () => {
     return navigator.clipboard.writeText(url);
 };
 shareButton.addEventListener("click", copyUrl);
+
+dropDownSelection.onchange = function() {
+    var e = document.getElementById("examples");
+    var value = e.value;
+    if (value === "simpleTypeDefinition") {
+        // Default values for populating the input fields
+        let schemaInputValue = "type::{\n" +
+            "  name: short_string,\n" +
+            "  type: string,\n" +
+            "  codepoint_length: range::[1, 10],\n" +
+            "}";
+        let valueInputValue = "\"Hello World!\"";
+        let schemaTypeInputValue = "short_string"
+
+        loadPage(schemaInputValue, valueInputValue, schemaTypeInputValue)
+    } else if (value === "typeDefinitionWithFields") {
+        // Default values for populating the input fields
+        let schemaInputValue = "type::{\n" +
+            "  name: customer,\n" +
+            "  type: struct,\n" +
+            "  fields: {\n" +
+            "    firstName: { type: string, occurs: required },\n" +
+            "    middleName: string,\n" +
+            "    lastName: { type: string, codepoint_length: range::[min, 7], occurs: required },\n" +
+            "    age: { type: int, valid_values: range::[1, max] },\n" +
+            "  }\n" +
+            "}";
+        let valueInputValue = "{\n" +
+            "  firstName: \"John\",\n" +
+            "  lastName: \"Doe\",\n" +
+            "  age: -5,\n" +
+            " }";
+        let schemaTypeInputValue = "customer"
+
+        loadPage(schemaInputValue, valueInputValue, schemaTypeInputValue)
+    } else if (value === "typeDefinitionWithLogicConstraints") {
+        // Default values for populating the input fields
+        let schemaInputValue = "type::{\n" +
+            "  name: any_of_core_types,\n" +
+            "  any_of: [\n" +
+            "    bool,\n" +
+            "    int,\n" +
+            "    string,\n" +
+            "  ],\n" +
+            "}";
+        let valueInputValue = "hi";
+        let schemaTypeInputValue = "any_of_core_types"
+
+        loadPage(schemaInputValue, valueInputValue, schemaTypeInputValue)
+    }
+};
