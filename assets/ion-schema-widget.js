@@ -193,5 +193,52 @@ dropDownSelection.onchange = function() {
         pre.textContent = "";
         violation.textContent = "";
         _set_output_style(resultDiv, "primary")
+    } else if (value === "typeDefinitionWithLogicConstraints") {
+        // Default values for populating the input fields
+        let schemaInputValue = "type::{\n" +
+            "  name: any_of_core_types,\n" +
+            "  any_of: [\n" +
+            "    bool,\n" +
+            "    int,\n" +
+            "    string,\n" +
+            "  ],\n" +
+            "}";
+        let valueInputValue = "hi";
+        let schemaTypeInputValue = "any_of_core_types"
+
+        const params = new Proxy(new URLSearchParams(window.location.search), {
+            get: (searchParams, prop) => searchParams.get(prop),
+        });
+
+        // If there are any query params in the URL, then use those and skip all the default values
+        if (params.schema || params.value || params.type) {
+            schemaInputValue = params.schema ?? "";
+            valueInputValue = params.value ?? "";
+            schemaTypeInputValue = params.type ?? "";
+        }
+
+        ace.edit("schema").setOptions({
+            mode: 'ace/mode/ion',
+            theme: 'ace/theme/cloud9_day',
+            showPrintMargin: false,
+            tabSize: 2,
+            value: schemaInputValue,
+        });
+        ace.edit("value").setOptions({
+            mode: 'ace/mode/ion',
+            theme: 'ace/theme/cloud9_day',
+            showPrintMargin: false,
+            tabSize: 2,
+            value: valueInputValue,
+        });
+        document.getElementById("schema_type").value = schemaTypeInputValue;
+
+        // clear previous validation results
+        const pre = document.getElementById('result');
+        const resultDiv = document.getElementById('resultdiv');
+        const violation = document.getElementById('violation');
+        pre.textContent = "";
+        violation.textContent = "";
+        _set_output_style(resultDiv, "primary")
     }
 };

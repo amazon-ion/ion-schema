@@ -10,8 +10,7 @@ title: Give Ion Schema a Try!
 
 <label for="schema"></label>
 
-Predefined examples:  
-
+Predefined examples: 
 <select name="examples" id="examples">
   <option value="simpleTypeDefinition">Simple Type Definition</option>
   <option value="typeDefinitionWithFields">Type Definition with fields</option>
