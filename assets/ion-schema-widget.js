@@ -41,7 +41,13 @@ function loadPage(schemaInputValue, valueInputValue, schemaTypeInputValue) {
     _set_output_style(resultDiv, "primary")
 }
 
-loadPage("type::{\n  name: short_string,\n  type: string,\n  codepoint_length: range::[1, 10],\n}", "\"Hello World!\"", "short_string");
+loadPage("type::{\n" +
+    "  name: short_string,\n" +
+    "  type: string,\n" +
+    "  codepoint_length: range::[1, 10],\n" +
+    "}",
+    "\"Hello World!\"",
+    "short_string");
 
 function _set_output_style(resultDiv, styleName) {
     var toRemove = [];
@@ -105,7 +111,11 @@ dropDownSelection.onchange = function() {
     var value = e.value;
     if (value === "simpleTypeDefinition") {
         // Default values for populating the input fields
-        let schemaInputValue = "type::{\n  name: short_string,\n  type: string,\n  codepoint_length: range::[1, 10],\n}";
+        let schemaInputValue = "type::{\n" +
+            "  name: short_string,\n" +
+            "  type: string,\n" +
+            "  codepoint_length: range::[1, 10],\n" +
+            "}";
         let valueInputValue = "\"Hello World!\"";
         let schemaTypeInputValue = "short_string"
 
