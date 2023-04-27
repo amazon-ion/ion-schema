@@ -37,20 +37,20 @@
 
 <TYPE_NAME> ::= <SYMBOL>
 
-<TYPE_REFERENCE> ::=           <TYPE_NAME>
-                   | $null_or::<TYPE_NAME>
-                   |           <INLINE_TYPE_DEFINITION>
-                   | $null_or::<INLINE_TYPE_DEFINITION>
-                   |           <IMPORT_TYPE>
-                   | $null_or::<IMPORT_TYPE>
+<TYPE_ARGUMENT> ::=           <TYPE_NAME>
+                  | $null_or::<TYPE_NAME>
+                  |           <INLINE_TYPE_DEFINITION>
+                  | $null_or::<INLINE_TYPE_DEFINITION>
+                  |           <IMPORT_TYPE>
+                  | $null_or::<IMPORT_TYPE>
 
 <OCCURS> ::= occurs: <INT>
            | occurs: <RANGE_INT>
            | occurs: optional
            | occurs: required
 
-<VARIABLY_OCCURRING_TYPE_REFERENCE> ::= { <OCCURS>, <CONSTRAINT>... }
-                                      | <TYPE_REFERENCE>
+<VARIABLY_OCCURRING_TYPE_ARGUMENT> ::= { <OCCURS>, <CONSTRAINT>... }
+                                     | <TYPE_ARGUMENT>
 
 <NUMBER> ::= <DECIMAL>
            | <FLOAT>
@@ -98,15 +98,15 @@
                | <TYPE>
                | <VALID_VALUES>
 
-<ALL_OF> ::= all_of: [ <TYPE_REFERENCE>... ]
+<ALL_OF> ::= all_of: [ <TYPE_ARGUMENT>... ]
 
 <ANNOTATIONS_MODIFIER> ::= required::
                          | closed::
 
 <ANNOTATIONS> ::= annotations: <ANNOTATIONS_MODIFIER>... [ <SYMBOL>... ]
-                | annotations: <TYPE_REFERENCE>
+                | annotations: <TYPE_ARGUMENT>
 
-<ANY_OF> ::= any_of: [ <TYPE_REFERENCE>... ]
+<ANY_OF> ::= any_of: [ <TYPE_ARGUMENT>... ]
 
 <BYTE_LENGTH> ::= byte_length: <INT>
                 | byte_length: <RANGE_INT>
@@ -119,29 +119,29 @@
 
 <CONTAINS> ::= contains: [ <VALUE>... ]
 
-<ELEMENT> ::= element: <TYPE_REFERENCE>
-            | element: distinct::<TYPE_REFERENCE>
+<ELEMENT> ::= element: <TYPE_ARGUMENT>
+            | element: distinct::<TYPE_ARGUMENT>
 
 <EXPONENT> ::= exponent: <INT>
              | exponent: <RANGE_INT>
 
-<FIELD> ::= <SYMBOL>: <VARIABLY_OCCURRING_TYPE_REFERENCE>
+<FIELD> ::= <SYMBOL>: <VARIABLY_OCCURRING_TYPE_ARGUMENT>
 
 <FIELDS> ::= fields: { <FIELD>... }
            | fields: closed::{ <FIELD>... }
 
-<FIELD_NAMES> ::= field_names: <TYPE_REFERENCE>
-                | field_names: distinct::<TYPE_REFERENCE>
+<FIELD_NAMES> ::= field_names: <TYPE_ARGUMENT>
+                | field_names: distinct::<TYPE_ARGUMENT>
 
 <IEEE754_FLOAT> ::= ieee754_float: binary16
                   | ieee754_float: binary32
                   | ieee754_float: binary64
 
-<NOT> ::= not: <TYPE_REFERENCE>
+<NOT> ::= not: <TYPE_ARGUMENT>
 
-<ONE_OF> ::= one_of: [ <TYPE_REFERENCE>... ]
+<ONE_OF> ::= one_of: [ <TYPE_ARGUMENT>... ]
 
-<ORDERED_ELEMENTS> ::= ordered_elements: [ <VARIABLY_OCCURRING_TYPE_REFERENCE>... ]
+<ORDERED_ELEMENTS> ::= ordered_elements: [ <VARIABLY_OCCURRING_TYPE_ARGUMENT>... ]
 
 <PRECISION> ::= precision: <INT>
               | precision: <RANGE_INT>
@@ -165,7 +165,7 @@
 <TIMESTAMP_PRECISION> ::= timestamp_precision: <TIMESTAMP_PRECISION_VALUE>
                         | timestamp_precision: <RANGE_TIMESTAMP_PRECISION>
 
-<TYPE> ::= type: <TYPE_REFERENCE>
+<TYPE> ::= type: <TYPE_ARGUMENT>
 
 <UTF8_BYTE_LENGTH> ::= utf8_byte_length: <INT>
                      | utf8_byte_length: <RANGE_INT>
