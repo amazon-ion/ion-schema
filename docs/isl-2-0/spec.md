@@ -128,7 +128,7 @@ The non-null equivalent of `$null` is actually `nothing`.
 
 ## Type Definitions
 
-{% include grammar-element.md productions="named_type_definition,inline_type_definition,variably_occurring_type_reference" %}
+{% include grammar-element.md productions="named_type_definition,inline_type_definition" %}
 
 A type consists of a collection of zero or more constraints.
 The set of values which belong to a type is the intersection of the values that satisfy each constraint.
@@ -142,26 +142,85 @@ A named type definition must be a top-level value in the schema document that is
 A named type definition must contain the field `name`, where the value is an Ion symbol that is to be the name of the type.
 All other type definitions must not declare a `name`.
 
-<!-- TODO: add example of named vs inline type -->
+{% include example.md title="Named Type Definitions" markdown="
+This is a trivial example of a named type—we are creating a type named `foo`.
+Since it has no constraints, it is equivalent to the type `$any`.
+```ion
+type::{
+  name: foo,
+}
+```
+You will almost always want to add _constraints_ to your named types, as in this example of a `positive_int` type.
+```ion
+type::{
+  name: positive_int,
+  type: int,
+  valid_values: range::[1, max],
+}
+```
+" %}
 
-## Type References
+## Type Arguments
 
-{% include grammar-element.md productions="type_reference,type_name,import_type" %}
+{% include grammar-element.md productions="type_argument,type_name,import_type" %}
 
-Some constraints accept a type reference or list of type references as their argument.
+Some constraints accept a type or list of types as their argument.
+A type argument can be a reference to a named type, an inline import of a type from another schema, or an inline definition of a new type.
 
-### Nullable Type References
+{% include example.md title="Reference to a Named Type" markdown="
+```ion
+type::{
+  name: foo,
+  type: $null_or::int
+}
+
+type::{
+  name: bar,
+  // The `list` symbol is a reference to a built-in type
+  type: list,
+  // The `foo` symbol is a reference to the previous type
+  element: foo,
+}
+```
+" %}
+
+{% include example.md title="Inline Import" markdown="
+```ion
+type::{
+  name: bar,
+  type: list,
+  // This imports the type `foo` from the schema `other_schema.isl`
+  element: { id: \"other_schema.isl\", type: foo },
+}
+```
+" %}
+
+{% include example.md title="Inline Type Definition" markdown="
+```ion
+type::{
+  name: bar,
+  type: list,
+  // This is a type definition that is inlined in the element constraint
+  element: { 
+    type: string,
+    codepoint_length: 10
+  },
+}
+```
+" %}
+
+### Nullable Type Arguments
 
 As a convenience, Ion Schema provides syntactical sugar for handling nullable values.
-The `$null_or` annotation modifies a type reference to also allow the `null` (or `null.null`) value.
-The `$null_or` annotation may not be added to top-level type definitions; it is only applicable to type references.
-When the `$null_or` annotation is present on any type reference, it SHALL be evaluated equivalently to the union of `$null` and the annotated type.
+The `$null_or` annotation modifies a type argument to also allow the `null` (or `null.null`) value.
+The `$null_or` annotation may not be added to top-level type definitions; it is only applicable to type arguments.
+When the `$null_or` annotation is present on any type argument, it SHALL be evaluated equivalently to the union of `$null` and the annotated type.
 
 For example, to allow `null` or any non-null integer value, you would use `$null_or::int`.
 To allow `null`, `null.int`, or any non-null integer value, you would use `$null_or::$int`.
 To allow `null` or any positive integer, you would use `$null_or::{ type: int, valid_values: range::[1, max] }`.
 
-{% include example.md title="Nullable Type Reference" markdown="
+{% include example.md title="Nullable Type Argument" markdown="
 The following types are equivalent.
 
 ```ion
@@ -178,21 +237,21 @@ type::{
 ```
 " %}
 
-### Variably-Occurring Type References
+### Variably-Occurring Type Arguments
 
-Some constraints allow a quantity to be specified along with a type reference.
+Some constraints allow a quantity to be specified along with a type argument.
 The quantity is given by the `occurs` field, and the field value can be one of `optional`, `required`, a non-negative integer, or an integer range.
 
-{% include grammar-element.md productions="variably_occurring_type_reference,occurs" %}
+{% include grammar-element.md productions="variably_occurring_type_argument,occurs" %}
 
 While it is valid for a constraint to be repeated, `occurs` is not a constraint and may not appear more than once in any type definition.
 The field `occurs` is never allowed in a `NAMED_TYPE_DEFINITION`.
 
 The `occurs` field is optional.
-Each constraint that accepts a variably-occurring type reference specifies what the default `occurs` value is for that constraint. 
+Each constraint that accepts a variably-occurring type argument specifies what the default `occurs` value is for that constraint. 
 
-It is permitted to use a nullable type reference wherever a variably-occurring type reference is accepted.
-However, the `$null_or` annotation may not be applied to any variably-occurring type with an explicit `occurs` field.
+It is permitted to use a nullable type argument wherever a variably-occurring type argument is accepted.
+However, the `$null_or` annotation may not be applied to any variably-occurring type argument with an explicit `occurs` field.
 
 {% include example.md title="Correct ways to construct a variably-occurring, nullable type" markdown='
 ```ion
@@ -389,7 +448,7 @@ Defines the type and/or constraints for all values within a homogeneous list, S-
 
 {% comment %}{% include example.md title="`element`" code_file="examples/placeholder.isl" %}{% endcomment %}
 
-The `distinct` annotation on the type reference argument indicates that the constraint should not allow repeated elements within the container.
+The `distinct` annotation on the type argument indicates that the constraint should not allow repeated elements within the container.
 For the purpose of this constraint, the comparison of the values (including any annotations) in the container is governed by the equivalence rules defined by the [Ion data model](https://amzn.github.io/ion-docs/docs/spec.html#the-ion-data-model).
 
 {% comment %}{% include example.md title="Disallowing duplicate elements" code_file="examples/placeholder.isl" %}{% endcomment %}
@@ -427,7 +486,7 @@ Any value that is not a struct, as well as `null.struct`, will always be invalid
 {% comment %}{% include example.md title="Limiting the length of field names" code_file="examples/placeholder.isl" %}{% endcomment %}
 {% comment %}{% include example.md title="Limiting the characters used in field names" code_file="examples/placeholder.isl" %}{% endcomment %}
 
-The `distinct` annotation on the type reference argument indicates that the constraint should not allow field names to be repeated within a single struct.
+The `distinct` annotation on the type argument indicates that the constraint should not allow field names to be repeated within a single struct.
 
 {% comment %}{% include example.md title="Disallowing repeated field names" code_file="examples/placeholder.isl" %}{% endcomment %}
 
@@ -440,7 +499,7 @@ The `fields` constraint is a collection of field definitions—a field name and 
 The values for all occurrences of a field name must match the associated type.
 Ion structs allow field names to be repeated, and a field definition applies to all occurrences of a field name in the value being validated.
 In addition, the number of times that a field name may occur can be specified with `occurs`.
-(See [§Variably-Occurring Type References](#variably-occurring-type-references).)
+(See [§Variably-Occurring Type Arguments](#variably-occurring-type-arguments).)
 If a field definition does not specify a value for `occurs`, the field may occur zero or one times.
 The `fields` constraint may not have multiple definitions for a given field name—i.e. field names may not be repeated within a single instance of the `fields` constraint.
 
@@ -478,7 +537,7 @@ Value must be valid for exactly one of the types. The list of types must not be 
 
 {% include note.html type="important" content="
 Specifying two overlapping types may cause unexpected results.
-For example, if you specify `one_of: [$null_or::int, $null_or::float]`, the value `null` will be invalid because it matches two type references. 
+For example, if you specify `one_of: [$null_or::int, $null_or::float]`, the value `null` will be invalid because it matches two type arguments. 
 " %}
 
 {% comment %}{% include example.md title="`one_of`" code_file="examples/placeholder.isl" %}{% endcomment %}
@@ -490,7 +549,7 @@ For example, if you specify `one_of: [$null_or::int, $null_or::float]`, the valu
 Defines constraints over a list of values in a heterogeneous list, S-expression, or document.
 Each value in a list, S-expression, or document is expected to be valid against the type in the corresponding position of the specified types list.
 Each type is implicitly defined with `occurs: 1`—behavior which may be overridden.
-(See [§Variably-Occurring Type References](#variably-occurring-type-references).)
+(See [§Variably-Occurring Type Arguments](#variably-occurring-type-arguments).)
 
 When specified, this constraint fully defines the content of a list, S-expression, or document—open content is not allowed.
 
@@ -787,3 +846,9 @@ Ion Schema 2.0 will be fully interoperable with Ion Schema 1.0.
 * Ion Schema 2.0 shall allow importing schemas written in Ion Schema 1.0.
 * Any implementation of ISL 1.0 that also implements ISL 2.0 must allow types from an ISL 2.0 schema to be imported by an ISL 1.0 schema.
 * The interoperability requirements stated here shall not apply to Ion Schema 3.0 or any future major version unless that major version explicitly restates them. (i.e., Ion Schema 3.0 is allowed to say that implementations must also support Ion Schema 2.0 but are not required to support Ion Schema 1.0.)
+
+# Change Log
+This is a list of all non-trivial changes to this document since it was first published.
+For a complete list of changes, refer to the commit history at [`amazon-ion/ion-schema`](https://github.com/amazon-ion/ion-schema).
+
+* **2023-04-27**—Renamed "Type Reference" to "Type Argument" to better convey the purpose.
