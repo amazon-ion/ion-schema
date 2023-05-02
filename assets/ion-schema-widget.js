@@ -21,6 +21,7 @@ function loadPage(schemaInputValue, valueInputValue, schemaTypeInputValue) {
         showPrintMargin: false,
         tabSize: 2,
         value: schemaInputValue,
+
     });
     ace.edit("value").setOptions({
         mode: 'ace/mode/ion',
@@ -29,6 +30,7 @@ function loadPage(schemaInputValue, valueInputValue, schemaTypeInputValue) {
         tabSize: 2,
         value: valueInputValue,
     });
+
     document.getElementById("schema_type").value = schemaTypeInputValue;
 
 
@@ -64,12 +66,14 @@ const show = () => {
 
     init()
         .then(() => {
-            const result = validate(valueContent, schemaContent, document.getElementById('schema_type').value);
+            const is_document = document.getElementById("document").checked;
+            console.log(is_document);
+            const result = validate(valueContent, schemaContent, document.getElementById('schema_type').value, is_document);
             const pre = document.getElementById('result');
             const resultDiv = document.getElementById('resultdiv');
-            const violation = document.getElementById('violation');
+            const container = document.getElementById('violation');
 
-            violation.textContent = "";
+            container.textContent = "";
             // check if there is any error while validation and alert with the error
             if (result.has_error()) {
                 _set_output_style(resultDiv, "danger")
@@ -81,7 +85,42 @@ const show = () => {
                 } else {
                     _set_output_style(resultDiv, "warning")
                     pre.textContent = `${result.value()} is invalid!`;
-                    violation.textContent = result.violation();
+
+                    // Create the table element
+                    let table = document.createElement("table");
+
+                    // Get the keys (column names) of the first object in the JSON data
+                    let cols = Object.keys(result.violations()[0]);
+
+                    // Create the header element
+                    let thead = document.createElement("thead");
+                    let tr = document.createElement("tr");
+
+                    // Loop through the column names and create header cells
+                    cols.forEach((item) => {
+                        let th = document.createElement("th");
+                        th.innerText = item; // Set the column name as the text of the header cell
+                        tr.appendChild(th); // Append the header cell to the header row
+                    });
+                    thead.appendChild(tr); // Append the header row to the header
+                    table.append(tr) // Append the header to the table
+
+                    // Loop through the JSON data and create table rows
+                    result.violations().forEach((item) => {
+                        let tr = document.createElement("tr");
+
+                        // Get the values of the current object in the JSON data
+                        let vals = Object.values(item);
+
+                        // Loop through the values and create table cells
+                        vals.forEach((elem) => {
+                            let td = document.createElement("td");
+                            td.innerText = elem; // Set the value as the text of the table cell
+                            tr.appendChild(td); // Append the table cell to the table row
+                        });
+                        table.appendChild(tr); // Append the table row to the table
+                    });
+                    container.appendChild(table) // Append the table to the container element
                 }
             }
 

@@ -22,8 +22,13 @@ Enter one or more type definitions. No Authority is configured, so imports are n
 
 <label for="value"></label>
 Enter a single Ion value.
-<div id="value" class="bs-callout bs-callout-primary"></div>
 
+<label class="container"> 
+    <input id="document" type="checkbox">
+    <span class="checkmark"></span>
+Treat the input Ion value as document type that represents a series of top-level values
+</label>
+<div id="value" class="bs-callout bs-callout-primary"></div>
 
 <label for="schema_type">Validate as </label>
 <input type="text" id="schema_type" placeholder="e.g. my_type" name="schema_type" size="15"/>
