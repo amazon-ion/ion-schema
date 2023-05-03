@@ -21,7 +21,6 @@ function loadPage(schemaInputValue, valueInputValue, schemaTypeInputValue) {
         showPrintMargin: false,
         tabSize: 2,
         value: schemaInputValue,
-
     });
     ace.edit("value").setOptions({
         mode: 'ace/mode/ion',
@@ -30,7 +29,6 @@ function loadPage(schemaInputValue, valueInputValue, schemaTypeInputValue) {
         tabSize: 2,
         value: valueInputValue,
     });
-
     document.getElementById("schema_type").value = schemaTypeInputValue;
 
 
