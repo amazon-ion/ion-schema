@@ -103,7 +103,6 @@ const show = () => {
     init()
         .then(() => {
             const is_document = document.getElementById("document").checked;
-            console.log(is_document);
             const result = validate(valueContent, schemaContent, document.getElementById('schema_type').value, is_document);
             const pre = document.getElementById('result');
             const resultDiv = document.getElementById('resultdiv');
