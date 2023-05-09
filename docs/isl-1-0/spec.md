@@ -41,10 +41,10 @@ assumes that readers are familiar with the Ion data model defined in the
     * [timestamp_precision](#timestamp_precision)
   * [Container Constraints](#container-constraints)
     * [container_length](#container_length)
+    * [contains](#contains)
     * [content](#content)
     * [element](#element)
   * [List/S-expression/Document Constraints](#lists-expressiondocument-constraints)
-    * [contains](#contains)
     * [ordered_elements](#ordered_elements)
   * [Struct Constraints](#struct-constraints)
     * [fields](#fields)
@@ -671,6 +671,18 @@ S-expression, or document, or fields in a struct.
 > container_length: range::[10, 100]
 > ```
 
+### contains
+
+<code><b>contains:</b> [ <i>&lt;VALUE&gt;...</i> ]</code>
+
+Indicates that the list, S-expression, struct, or document is expected to contain all of
+the specified values, in no particular order.
+
+> ```
+> contains: [high]
+> contains: [1, 4.0, high, "apple"]
+> ```
+
 ### element
 
 <code><b>element:</b> <i>&lt;TYPE_REFERENCE&gt;</i></code><br/>
@@ -684,18 +696,6 @@ homogeneous list, S-expression, struct, or document.
 > ```
 
 ## List/S-expression/Document Constraints
-
-### contains
-
-<code><b>contains:</b> [ <i>&lt;VALUE&gt;...</i> ]</code>
-
-Indicates that the list, S-expression, or document is expected to contain all of
-the specified values, in no particular order.
-
-> ```
-> contains: [high]
-> contains: [1, 4.0, high, "apple"]
-> ```
 
 ### ordered_elements
 
