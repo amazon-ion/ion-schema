@@ -53,7 +53,7 @@ _While this is similar to [Semantic Versioning](https://semver.org/), there are 
 * The keyspace reserved for ISL version markers SHALL be the set of symbols that matches the regular expression `^\$ion_schema_\d.*$`.
 * A *valid* ISL version marker SHALL match the regular expression `^\$ion_schema_[1-9]\d*_(0|[1-9]\d*)$`.
 * An ISL Version Marker in the form `$ion_schema_X_Y` SHALL indicate that X and Y are the major and minor version respectively.
-* The first value in the schema SHOULD be an ISL Version Marker; if a top-level ISL value is encountered before encountering an ISL version marker, that schema SHALL use ISL 1.0.
+* The first value in the schema SHOULD be an ISL Version Marker; if the first value is not an ISL version marker, that schema SHALL use ISL 1.0.
 
 ## Requirements for Ion Schema Implementations
 
