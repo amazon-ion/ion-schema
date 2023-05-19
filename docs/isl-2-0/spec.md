@@ -57,9 +57,10 @@ type::{
 {% include grammar-element.md productions="isl_version_marker" %}
 
 The Ion Schema version marker for Ion Schema 2.0 is `$ion_schema_2_0`.
-The Ion Schema version marker must be the first element in the schema document, before any `type` or `schema_header` structs or any open content.
-If the first element of a schema document is not a version marker, then it is an Ion Schema 1.0 document, and it must follow the [Ion Schema 1.0 specification](../isl-1-0/spec).
-If any Ion Schema version marker is found after the first value of the schema document, it is invalid and will result in an error.
+The Ion Schema version marker is the first element in the schema document, before any `type` or `schema_header` structs or any open content.
+Any non-Ion-Schema values (i.e. open content) before the Ion Schema version marker is not part of the schema.
+If any Ion Schema value (i.e. a schema header or a type) appears before or without a version marker, then that schema is an Ion Schema 1.0 document, and it must follow the [Ion Schema 1.0 specification](../isl-1-0/spec).
+If any Ion Schema version marker is found after the first value of the schema document, it is invalid and will result in an error as required by [ISL Versioning § Requirements for Ion Schema Implementations](https://amazon-ion.github.io/ion-schema/docs/isl-versioning#requirements-for-ion-schema-implementations).
 
 {% comment %}{% include example.md title="An ISL 2.0 Schema" code_file="examples/placeholder.isl" %}{% endcomment %}
 
