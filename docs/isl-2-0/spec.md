@@ -37,19 +37,30 @@ A schema consists of a schema version marker `$ion_schema_2_0` followed by an op
 The schema header is a struct, annotated with `schema_header`, with an optional `imports` field for leveraging types from other schemas.
 The schema header may also have an optional `user_reserved_fields` field that is used to declared reserved symbols that are to be used for open content fields.
 The schema footer is a struct that it annotated with `schema_footer`.
-While a header and footer are both optional, a footer is required if a header is present (and vice-versa).
+The schema footer is optional and can be used to delimit the end of a schema when a schema is embedded in a larger Ion stream.
 A schema may not have more than one header or more than one footer.
 
-{% comment %}{% include example.md title="A schema with one type and no header or footer" code_file="examples/placeholder.isl" %}{% endcomment %}
+{% include example.md title="An Ion Schema 2.0 schema with one type and no header" markdown='
+```ion
+$ion_schema_2_0
+
+type::{
+  name: positive_int,
+  type: int,
+  valid_values: range::[1, max],
+}
+```
+' %}
 
 ## Version Marker
 
 {% include grammar-element.md productions="isl_version_marker" %}
 
 The Ion Schema version marker for Ion Schema 2.0 is `$ion_schema_2_0`.
-The Ion Schema version marker must appear in the schema document before any `type` or `schema_header` structs.
-If a schema document has no version marker, then it is an Ion Schema 1.0 document, and it must follow the [Ion Schema 1.0 specification](../isl-1-0/spec).
-If any Ion Schema version marker is found after the first `schema_header` or `type`, the schema document is invalid, and it will result in an error.
+The Ion Schema version marker is the first element in the schema document, before any `type` or `schema_header` structs or any open content.
+Any non-Ion-Schema values (i.e. open content) before the Ion Schema version marker are not part of the schema; implementations MAY choose to surface these values, but are not required to do so.
+If any Ion Schema value (i.e. a schema header or a type) appears before or without a version marker, then that schema is an Ion Schema 1.0 document, and it must follow the [Ion Schema 1.0 specification](../isl-1-0/spec).
+If any Ion Schema version marker is found after the first value of the schema document, it is invalid and will result in an error as required by [ISL Versioning § Requirements for Ion Schema Implementations](https://amazon-ion.github.io/ion-schema/docs/isl-versioning#requirements-for-ion-schema-implementations).
 
 {% comment %}{% include example.md title="An ISL 2.0 Schema" code_file="examples/placeholder.isl" %}{% endcomment %}
 
@@ -66,7 +77,55 @@ If two types with the same name are imported, or if a type defined within a sche
 Only named types of a schema may be imported in another schema.
 Types may only be imported from the schema where they are declared; importing a type to a schema does not make that type transitively available to any other schemas. 
 
-{% comment %}{% include example.md title="A schema that imports types from other schemas" code_file="examples/placeholder.isl" %}{% endcomment %}
+{% include example.md title="A schema that imports a type from other schema" markdown='
+Suppose we create a schema `integers.isl` with the following content:
+```ion
+$ion_schema_2_0
+
+type::{
+  name: positive_int,
+  type: int,
+  valid_values: range::[1, max],
+}
+
+type::{
+  name: negative_int,
+  type: int,
+  valid_values: range::[min, -1],
+}
+```
+We can use the types defined in `integers.isl` in another schema by importing the specific types that we want to use.
+When importing types by name, we can specify an alias to improve readability or to avoid a naming conflict with another
+type that has the same name.
+
+```ion
+$ion_schema_2_0
+
+schema_header::{
+  imports: [
+    { id: "integers.isl", type: positive_int },
+    { id: "integers.isl", type: negative_int },
+    { id: "integers.isl", type: positive_int, as: positive_int_by_another_name },
+  ]
+}
+
+type::{
+  name: non_zero_int,
+  one_of: [
+    negative_int,
+    positive_int,
+  ]
+}
+
+type::{
+  name: non_negative_int,
+  one_of: [
+    positive_int_by_another_name,
+    { valid_values: [0] }
+  ],
+}
+```
+' %}
 
 ### Schema Authorities
 
@@ -732,20 +791,20 @@ type::{
   crested: false,
   banded: true,
 }
-schema_footer::{}
 ```
 {% endcapture %}
 {% include example.md title="A schema with open content using reserved symbols as open content field names." markdown=sample_code %}
 
-An Ion Schema MAY include extra top-level values that are not explicitly specified in the Ion Schema specification, but any top-level open content MUST NOT be annotated with a *reserved symbol*.
 Top-level open content may appear before, after, or in between the Ion Schema version marker, header, types, and footer.
+Top-level open content may appear after the Ion Schema version marker and before, between, or after any header, types, or footer.
+However, any open content that appears before the Ion Schema version marker or after the schema footer is not strictly part of the schema; implementations MAY surface such values, but are not required to do so.
 Note that a top-level symbol value with the same text as an Ion schema version marker is always interpreted as an Ion Schema version marker and can never be valid open content.
 
 {% capture sample_code %}
 ```ion
-penguins
-
 $ion_schema_2_0
+
+penguins
 
 $note_to_self::"I really like penguins. Get ready!"
 3
@@ -785,8 +844,6 @@ FAQ::{
 TODO::
 '''Add definitions for southern rockhopper penguins, emperor penguins, king '''
 '''penguins, gentoo penguins, chinstrap penguins, and macaroni penguins.    '''
-
-schema_footer::{}
 
 [ "Goodbye" ]
 ```
