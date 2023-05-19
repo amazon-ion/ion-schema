@@ -58,7 +58,7 @@ type::{
 
 The Ion Schema version marker for Ion Schema 2.0 is `$ion_schema_2_0`.
 The Ion Schema version marker is the first element in the schema document, before any `type` or `schema_header` structs or any open content.
-Any non-Ion-Schema values (i.e. open content) before the Ion Schema version marker is not part of the schema.
+Any non-Ion-Schema values (i.e. open content) before the Ion Schema version marker are not part of the schema; implementations MAY choose to surface these values, but are not required to do so.
 If any Ion Schema value (i.e. a schema header or a type) appears before or without a version marker, then that schema is an Ion Schema 1.0 document, and it must follow the [Ion Schema 1.0 specification](../isl-1-0/spec).
 If any Ion Schema version marker is found after the first value of the schema document, it is invalid and will result in an error as required by [ISL Versioning § Requirements for Ion Schema Implementations](https://amazon-ion.github.io/ion-schema/docs/isl-versioning#requirements-for-ion-schema-implementations).
 
@@ -795,15 +795,16 @@ type::{
 {% endcapture %}
 {% include example.md title="A schema with open content using reserved symbols as open content field names." markdown=sample_code %}
 
-An Ion Schema MAY include extra top-level values that are not explicitly specified in the Ion Schema specification, but any top-level open content MUST NOT be annotated with a *reserved symbol*.
+Top-level open content may appear before, after, or in between the Ion Schema version marker, header, types, and footer.
 Top-level open content may appear after the Ion Schema version marker and before, between, or after any header, types, or footer.
+However, any open content that appears before the Ion Schema version marker or after the schema footer is not strictly part of the schema; implementations MAY surface such values, but are not required to do so.
 Note that a top-level symbol value with the same text as an Ion schema version marker is always interpreted as an Ion Schema version marker and can never be valid open content.
 
 {% capture sample_code %}
 ```ion
-penguins
-
 $ion_schema_2_0
+
+penguins
 
 $note_to_self::"I really like penguins. Get ready!"
 3
