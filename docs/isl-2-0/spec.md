@@ -136,6 +136,15 @@ When resolving a schema, authorities may choose to follow well-known patterns; f
 - a filesystem authority might specify that an `id` string corresponds to an ISL file relative to some base, e.g.:`"{base}/com/example/core/Customer.isl"`
 - a REST authority might specify that an `id` string is a resource URL that corresponds to an ISL file, e.g.: `"https://{host}:{port}/{base}/com/example/core/Customer"` (again, note the inherent availability and security risks here)
 
+{% include note.html type="tip" content="
+Ion Schema does not require any [filename extension](https://en.wikipedia.org/wiki/Filename_extension) for files containing Ion Schema Language.
+However, `.isl` is recommended as convention.
+" %}
+
+{% include note.html type="tip" content="
+If you need to indicate a MIME type for Ion Schema, you can use `application/ion`, which is listed in the [IANA Provisional Standard Media Types Registry](https://www.iana.org/assignments/provisional-standard-media-types/provisional-standard-media-types.xhtml).
+" %}
+
 # Types
 
 The Ion Schema type system is a hybrid of [nominal](https://en.wikipedia.org/wiki/Nominal_type_system) and [structural](https://en.wikipedia.org/wiki/Structural_type_system) typing.
