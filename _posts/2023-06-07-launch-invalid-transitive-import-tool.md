@@ -153,7 +153,7 @@ schema_header::{
 schema_footer::{}
 ```
 
-The  use case is valid, but this implementation is no longer valid because it relied on the buggy behavior.
+The use case is valid, but this implementation is no longer valid because it relied on the buggy behavior.
 
 Instead, you must explicitly declare types in your schema to “re-export” them.
 
@@ -165,7 +165,7 @@ type::{ name: an_alias_for_api_1_type, type: { id: "api_1.isl", type: api_1_type
 // etc.
 ``` 
 
-The schema fixer/rewriter tool will know how to handle this sort of schemas, and can expand the imports into type definitions for you.
+The schema fixer/rewriter tool will know how to handle this sort of schema, and can expand the imports into type definitions for you.
 
 ### How do customers upgrade when mixing schemas authored by multiple teams?
 
@@ -173,7 +173,7 @@ Who needs to upgrade their schemas first?
 
 * If the consumer only consumes types by importing them from an aggregating schema, the vendor and consumer can safely update their schemas in any order.
 * If the only necessary changes by the vending team are rewrites of aggregating schemas (i.e. schema has imports but not types), the vending team can do this either before or after the consumer schemas are updated.
-* If vending schemas as an artifact in some package manager, the vending team can run the rewriter tool and save the results in a new version of package distribution. Then consuming teams can pick up that new version at their convenience.
+* If vending schemas as an artifact in some package manager, the vending team can run the rewriter tool and save the results in a new version of the package distribution. Then consuming teams can pick up that new version at their convenience.
 * If none of the above options are possible, consumers must update schemas first, then vendors can update their schemas, then everyone can update their schema systems.
 * Consumers cannot update their schema systems to the new behavior until the vended schemas have been fixed (or are known to be good).
 * Cyclical cross-team dependencies could cause a problem where all the schemas need to be updated at the same time. As long as schemas are version-controlled this should still be reasonably straightforward. Feel free to open an issue if you need help in this situation.
