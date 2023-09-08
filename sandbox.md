@@ -12,9 +12,7 @@ title: Give Ion Schema a Try!
 
 Predefined examples: 
 <select name="examples" id="examples">
-  <option value="simpleTypeDefinition">Simple Type Definition</option>
-  <option value="typeDefinitionWithFields">Type Definition with fields</option>
-  <option value="typeDefinitionWithLogicConstraints">Type Definition with logic constraint</option>
+  <!-- These are loaded dynamically in ion-schema-widget.js --/>
 </select>
 
 Enter one or more type definitions. No Authority is configured, so imports are not available.
