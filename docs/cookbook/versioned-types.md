@@ -123,7 +123,7 @@ type::{
 
 ### How it works
 
-Each `any_of` encodes an implication: _if field X is present, then version must
+Each [`any_of`](../isl-2-0/spec#any_of) encodes an implication: _if field X is present, then version must
 be at least N._ Written in propositional logic:
 
 > present(field) &rarr; version &ge; N
@@ -133,12 +133,9 @@ Which is equivalent to the disjunction:
 > &not;present(field) &or; version &ge; N
 
 In Ion Schema, "not present" is expressed by constraining the field to
-[`nothing`](../isl-2-0/spec#built-in-types) (the empty type — no value can
-satisfy it, so the field must be absent). "Version is at least N" is expressed
+[`nothing`](../isl-2-0/spec#built-in-types) (no value can satisfy the
+empty type, so the field must be absent). "Version is at least N" is expressed
 by constraining the `version` field with `valid_values: range::[N, max]`.
-
-The [`any_of`](../isl-2-0/spec#any_of) constraint requires that at least one of
-its alternatives is satisfied — matching the logical "or" of the disjunction.
 
 (For more background on expressing logical relationships in Ion Schema, see
 [Expressing logical relationships between fields](logical-relationships).)
@@ -148,13 +145,13 @@ its alternatives is satisfied — matching the logical "or" of the disjunction.
 The following values are **valid** for the `Widget` type:
 
 ```ion
-// v1 — only base fields
+// v1 - only base fields
 { version: 1, name: "sprocket" }
 
-// v2 — includes color
+// v2 - includes color
 { version: 2, name: "gear", color: "red" }
 
-// v3 — includes all fields
+// v3 - includes all fields
 { version: 3, name: "bolt", color: "zinc", weight: 4.5, dimensions: "M8x30" }
 
 // v2 without the optional v2 field (color is not required)
@@ -177,7 +174,7 @@ The following values are **invalid**:
 ## Extended example: an evolving API response
 
 This example demonstrates several real-world version evolution scenarios in a
-single type — a field changing types, a field being removed, and an enum gaining
+single type: a field changing types, a field being removed, and an enum gaining
 a variant.
 
 Consider an `ApiResponse` type that evolves through four versions:
@@ -274,15 +271,15 @@ value matches `PriorityV4`.
 // Valid v1
 { version: 1, request_id: 42, status: "ok", payload: {} }
 
-// Valid v2 — request_id is now a string, metadata present
+// Valid v2 - request_id is now a string, metadata present
 { version: 2, request_id: "abc-123", status: "ok",
   payload: {}, metadata: { trace_id: "x" } }
 
-// Valid v3 — priority with v3 variant
+// Valid v3 - priority with v3 variant
 { version: 3, request_id: "def-456", status: "ok",
   payload: {}, metadata: { trace_id: "y" }, priority: high }
 
-// Valid v4 — metadata gone, priority uses new variant
+// Valid v4 - metadata gone, priority uses new variant
 { version: 4, request_id: "ghi-789", status: "ok",
   payload: {}, priority: critical }
 
@@ -340,7 +337,7 @@ versions, defeating the purpose.
 
 A field may pass through three states across versions: absent (not yet
 introduced), optional (allowed but not required), and required. This requires
-two `any_of` constraints — one for each transition:
+one `any_of` constraint for each transition:
 
 ```ion
 $ion_schema_2_0
@@ -421,7 +418,7 @@ type::{
 ```
 
 Each `CartItem` in the `items` list is validated against its own `version`
-field. A v1 `ShoppingCart` can contain v3 `CartItem`s and vice versa — the
+field. A v1 `ShoppingCart` can contain v3 `CartItem`s and vice versa. The
 versions are decoupled.
 
 The [`element`](../isl-2-0/spec#element) constraint on `items` ensures every
@@ -486,7 +483,7 @@ When several fields are introduced in the same version, group them in a single
 ```
 
 This means that _any_ of those fields being present requires version 3 or
-higher — but they do not need to co-occur. In v3+, any combination of the
+higher, but they do not need to co-occur. In v3+, any combination of the
 grouped fields is valid. Use separate `any_of` constraints when fields are
 introduced in different versions.
 
