@@ -19,6 +19,7 @@ redirect_from:
 
 * [Modeling Logical Relationships](cookbook/logical-relationships)
 * [Modeling SQL Decimals](cookbook/sql-decimals)
+* [Modeling Versioned Data Types](cookbook/versioned-types)
 * [Optionally ignoring the occurs requirement for fields](cookbook/ignore-occurs-requirements)
 * [Using Ion Schema Schemas](cookbook/ion-schema-schemas)
 * [Getting started with `ion-schema-rust`](cookbook/ion-schema-rust-getting-started)
