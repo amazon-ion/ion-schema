@@ -80,7 +80,7 @@ ranges. Instead, enumerate the valid versions explicitly with
 ```ion
   any_of: [
     { fields: { color: nothing } },
-    { fields: { version: { valid_values: ["2.0", "2.1", "3.0"] } } },
+    { fields: { version: { valid_values: ["2.0.0", "2.1.0", "3.0.0"] } } },
   ],
 ```
 
@@ -498,5 +498,5 @@ introduced in different versions.
 - **Validation cost scales linearly.** Each `any_of` constraint is evaluated
   independently during validation. For types with many version gates, this means
   validation cost grows with the number of gates. (See
-  [`ion-schema-rust#253`](https://github.com/amazon-ion/ion-schema-rust/issues/253)`)
+  [`ion-schema-rust#253`](https://github.com/amazon-ion/ion-schema-rust/issues/253))
   for the mitigation of this issue.)
